@@ -6,11 +6,14 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MarioPartyEditor
 {
     public partial class Form1 : Form
     {
+        public string SelectedFile { get => (string)filesystemView.SelectedNode.Tag; }
+
         public Form1()
         {
             InitializeComponent();
@@ -19,7 +22,7 @@ namespace MarioPartyEditor
             filesystemView.AfterSelect += (_, nodeArgs) =>
             {
                 // Update selected file label
-                loadTextEditorButton.Enabled = filesystemView.SelectedNode != null;
+                mainContainer.Panel2.Enabled = filesystemView.SelectedNode != null;
                 selectedFileLinkText.Text = nodeArgs.Node.Text;
                 selectedFileLinkText.Tag = nodeArgs.Node;
             };
@@ -52,10 +55,11 @@ namespace MarioPartyEditor
 
                 foreach (var file in Directory.EnumerateFiles(path))
                 {
+                    using var fstream = File.OpenRead(file);
                     var fileFormatName = (from type in Assembly.GetExecutingAssembly().GetTypes()
                                           let attributes = type.GetCustomAttributes(typeof(FileFormatCheckerAttribute))
-                                          where attributes.Count() > 0 && (bool)type.GetMethods().First().Invoke(null, new object[1])
-                                          select ((FileFormatCheckerAttribute)attributes.First()).FormatName).First();
+                                          where attributes.Count() > 0 && (bool)type.GetMethods().First().Invoke(null, new object[] { new BinaryReader(fstream) })
+                                          select ((FileFormatCheckerAttribute)attributes.First()).FormatName).FirstOrDefault() ?? "Unknown";
 
                     var nodeName = $"{Path.GetFileName(file)} [{fileFormatName}]";
                     parentNode.Nodes.Add(nodeName).Tag = file;
@@ -75,6 +79,13 @@ namespace MarioPartyEditor
         }
 
         private void loadTextEditorButton_Click(object sender, EventArgs e)
-            => new TextEditor((string)filesystemView.SelectedNode.Tag).Show(this);
+            => new TextEditor(SelectedFile).Show(this);
+
+        private void openWithButton_Click(object sender, EventArgs e)
+        {
+            var processInfo = new ProcessStartInfo(SelectedFile);
+            processInfo.Verb = "openas";
+            Process.Start(processInfo);
+        }
     }
 }

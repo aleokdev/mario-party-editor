@@ -39,7 +39,8 @@ namespace MarioPartyEditor
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            var texts = readTexts(new BinaryReader(File.OpenRead(filepathEditing)));
+            using var fstream = File.OpenRead(filepathEditing);
+            var texts = readTexts(new BinaryReader(fstream));
             if (texts == null)
             {
                 MessageBox.Show("This file does not seem to be a valid text file.");
@@ -47,10 +48,10 @@ namespace MarioPartyEditor
             }
             else
             {
-                textListBox.Items.AddRange(texts);
                 textListBox.DrawMode = DrawMode.OwnerDrawVariable;
                 textListBox.MeasureItem += textListBox_MeasureItem;
                 textListBox.DrawItem += textListBox_DrawItem;
+                textListBox.Items.AddRange(texts);
             }
         }
 
@@ -100,14 +101,18 @@ namespace MarioPartyEditor
 
         private void textListBox_MeasureItem(object sender, MeasureItemEventArgs e)
         {
+            const int spacing = 4;
             var lineCount = (from chr in textListBox.Items[e.Index].ToString() where chr == '\n' select chr).Count() + 1;
-            e.ItemHeight = lineCount * e.ItemHeight;
+            e.ItemHeight = lineCount * e.ItemHeight + spacing;
         }
 
         private void textListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();
-            e.Graphics.DrawString(textListBox.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), e.Bounds);
+            var brush = new SolidBrush(e.ForeColor);
+            var lineY = e.Bounds.Bottom - 2;
+            e.Graphics.DrawString(textListBox.Items[e.Index].ToString(), e.Font, brush, e.Bounds);
+            e.Graphics.DrawLine(new Pen(brush), new Point(e.Bounds.Left, lineY), new Point(e.Bounds.Right, lineY));
         }
     }
 }

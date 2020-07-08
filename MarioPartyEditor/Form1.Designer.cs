@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.Label label1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.filesystemView = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.loadGameButton = new System.Windows.Forms.ToolStripButton();
             this.mainContainer = new System.Windows.Forms.SplitContainer();
-            this.loadTextEditorButton = new System.Windows.Forms.Button();
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
+            this.loadTextEditorButton = new System.Windows.Forms.Button();
+            this.openWithButton = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -43,6 +44,15 @@
             this.mainContainer.Panel2.SuspendLayout();
             this.mainContainer.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(4, 4);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(52, 13);
+            label1.TabIndex = 1;
+            label1.Text = "Selected:";
             // 
             // filesystemView
             // 
@@ -88,34 +98,14 @@
             // 
             // mainContainer.Panel2
             // 
+            this.mainContainer.Panel2.Controls.Add(this.openWithButton);
             this.mainContainer.Panel2.Controls.Add(this.selectedFileLinkText);
             this.mainContainer.Panel2.Controls.Add(label1);
             this.mainContainer.Panel2.Controls.Add(this.loadTextEditorButton);
+            this.mainContainer.Panel2.Enabled = false;
             this.mainContainer.Size = new System.Drawing.Size(776, 410);
             this.mainContainer.SplitterDistance = 500;
             this.mainContainer.TabIndex = 3;
-            // 
-            // loadTextEditorButton
-            // 
-            this.loadTextEditorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadTextEditorButton.Enabled = false;
-            this.loadTextEditorButton.Location = new System.Drawing.Point(3, 49);
-            this.loadTextEditorButton.Name = "loadTextEditorButton";
-            this.loadTextEditorButton.Size = new System.Drawing.Size(266, 39);
-            this.loadTextEditorButton.TabIndex = 0;
-            this.loadTextEditorButton.Text = "Load with Text Editor";
-            this.loadTextEditorButton.UseVisualStyleBackColor = true;
-            this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(4, 4);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(52, 13);
-            label1.TabIndex = 1;
-            label1.Text = "Selected:";
             // 
             // selectedFileLinkText
             // 
@@ -127,6 +117,30 @@
             this.selectedFileLinkText.TabIndex = 2;
             this.selectedFileLinkText.TabStop = true;
             this.selectedFileLinkText.Text = "None";
+            // 
+            // loadTextEditorButton
+            // 
+            this.loadTextEditorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadTextEditorButton.Location = new System.Drawing.Point(3, 49);
+            this.loadTextEditorButton.Name = "loadTextEditorButton";
+            this.loadTextEditorButton.Size = new System.Drawing.Size(266, 39);
+            this.loadTextEditorButton.TabIndex = 0;
+            this.loadTextEditorButton.Text = "Load with Text Editor";
+            this.loadTextEditorButton.UseVisualStyleBackColor = true;
+            this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
+            // 
+            // openWithButton
+            // 
+            this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.openWithButton.Location = new System.Drawing.Point(3, 94);
+            this.openWithButton.Name = "openWithButton";
+            this.openWithButton.Size = new System.Drawing.Size(266, 39);
+            this.openWithButton.TabIndex = 3;
+            this.openWithButton.Text = "Open With...";
+            this.openWithButton.UseVisualStyleBackColor = true;
+            this.openWithButton.Click += new System.EventHandler(this.openWithButton_Click);
             // 
             // Form1
             // 
@@ -157,6 +171,7 @@
         private System.Windows.Forms.SplitContainer mainContainer;
         private System.Windows.Forms.Button loadTextEditorButton;
         private System.Windows.Forms.LinkLabel selectedFileLinkText;
+        private System.Windows.Forms.Button openWithButton;
     }
 }
 
