@@ -23,7 +23,9 @@ namespace MarioPartyEditor
     {
         public static bool Check(BinaryReader reader)
         {
-            return true;
+            uint textCount = reader.ReadUInt32();
+            // I sincerely doubt there is any text file in the game with more than 64 text values.
+            return textCount < 64;
         }
     }
 }
