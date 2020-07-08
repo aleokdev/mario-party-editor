@@ -33,10 +33,24 @@ namespace MarioPartyEditor
 
             originalFileSize = newFileSize = new FileInfo(fileToEdit).Length;
             textListBox.Items.Clear();
-            textListBox.Items.AddRange(readTexts(new BinaryReader(File.OpenRead(fileToEdit))));
-            textListBox.DrawMode = DrawMode.OwnerDrawVariable;
-            textListBox.MeasureItem += textListBox_MeasureItem;
-            textListBox.DrawItem += textListBox_DrawItem;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            var texts = readTexts(new BinaryReader(File.OpenRead(filepathEditing)));
+            if (texts == null)
+            {
+                MessageBox.Show("This file does not seem to be a valid text file.");
+                Close();
+            }
+            else
+            {
+                textListBox.Items.AddRange(texts);
+                textListBox.DrawMode = DrawMode.OwnerDrawVariable;
+                textListBox.MeasureItem += textListBox_MeasureItem;
+                textListBox.DrawItem += textListBox_DrawItem;
+            }
         }
 
         void updateFileSizeLabel()
@@ -56,6 +70,8 @@ namespace MarioPartyEditor
         string[] readTexts(BinaryReader reader)
         {
             uint textCount = reader.ReadUInt32();
+            if (textCount > 64) // This doesn't look like a valid text file...
+                return null;
             var textAddresses = new uint[textCount];
             for (int textIndex = 0; textIndex < textCount; textIndex++)
             {
