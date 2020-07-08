@@ -30,6 +30,7 @@ namespace MarioPartyEditor
         {
             InitializeComponent();
             filepathEditing = fileToEdit;
+            this.Text = $"Text Editor [{fileToEdit}]";
 
             originalFileSize = newFileSize = new FileInfo(fileToEdit).Length;
             textListBox.Items.Clear();
@@ -99,7 +100,8 @@ namespace MarioPartyEditor
 
         private void textListBox_MeasureItem(object sender, MeasureItemEventArgs e)
         {
-            e.ItemHeight = ((from chr in textListBox.Items[e.Index].ToString() where chr == '\n' select chr).Count() + 1) * e.ItemHeight;
+            var lineCount = (from chr in textListBox.Items[e.Index].ToString() where chr == '\n' select chr).Count() + 1;
+            e.ItemHeight = lineCount * e.ItemHeight;
         }
 
         private void textListBox_DrawItem(object sender, DrawItemEventArgs e)
