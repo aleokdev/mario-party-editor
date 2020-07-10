@@ -11,9 +11,6 @@ namespace NDSUtils
 
         public NDSDirectory RootDirectory;
 
-        public Dictionary<ushort, NDSDirectory> Directories { get; private set; } = new Dictionary<ushort, NDSDirectory>();
-        public Dictionary<ushort, NDSFile> Files { get; private set; } = new Dictionary<ushort, NDSFile>();
-
         /// <summary>
         /// Retrieves the File Name Table from the ROM.
         /// </summary>
@@ -33,6 +30,9 @@ namespace NDSUtils
 
         public void Initialize()
         {
+            Dictionary<ushort, NDSDirectory> directories = new Dictionary<ushort, NDSDirectory>();
+            Dictionary<ushort, NDSFile> files = new Dictionary<ushort, NDSFile>();
+
             // The maximum address we can access while reading metaentries.
             uint dirEntriesAddrLimit = BitConverter.ToUInt32(RawFNT.Slice(0, sizeof(uint)).GetAsArrayCopy(), startIndex: 0);
             // We create a dictionary for children before setting them because folders/files may be out of order
@@ -66,8 +66,8 @@ namespace NDSUtils
                     {
                         ushort entryID = BitConverter.ToUInt16(namedEntry.Slice(1 + nameLength, sizeof(ushort)).GetAsArrayCopy(), startIndex: 0);
                         namedEntry.SliceEnd = namedEntry.SliceStart + 1 + nameLength + sizeof(ushort);
-                        var directory = new NDSDirectory(this, entryID, name, containerDirID);
-                        Directories.Add(entryID, directory);
+                        var directory = new NDSDirectory(this, entryID, name);
+                        directories.Add(entryID, directory);
 
                         // If the parent is not a directory, then this entry represents the root directory (/data/)
                         if ((parentDirID & EntryDirectoryFlag) == 0)
@@ -88,14 +88,16 @@ namespace NDSUtils
                     else
                     {
                         namedEntry.SliceEnd = namedEntry.SliceStart + 1 + nameLength;
-                        var file = new NDSFile(this, fileID, name, containerDirID);
-                        if (Files.ContainsKey(fileID))
+                        var file = new NDSFile(this, fileID, name);
+                        if (files.ContainsKey(fileID))
                         {
-                            Files[fileID] = file;
+                            files[fileID] = file;
                             Console.WriteLine($"[NDSFilesystem.Initialize] The file {fileID} was repeated!");
                         }
                         else
-                            Files.Add(fileID, file);
+                        {
+                            files.Add(fileID, file);
+                        }
 
                         childrenStructure.TryGetValue(containerDirID, out var parent);
                         if (parent == null)
@@ -115,10 +117,10 @@ namespace NDSUtils
 
             foreach (var parentRelations in childrenStructure)
             {
-                Directories.TryGetValue(parentRelations.Key, out var parent);
+                directories.TryGetValue(parentRelations.Key, out var parent);
                 if (parent == null)
                 {
-                    Console.WriteLine($"[NDSFilesystem.Initialize] Parent 0x{parentRelations.Key:X} does not exist as a directory!! (First child: {Files[parentRelations.Value.First()].Name})");
+                    Console.WriteLine($"[NDSFilesystem.Initialize] Parent 0x{parentRelations.Key:X} does not exist as a directory!! (First child: {files[parentRelations.Value.First()].Name})");
                     continue;
                 }
                 else
@@ -126,9 +128,15 @@ namespace NDSUtils
                     foreach (var child in parentRelations.Value)
                     {
                         if ((child & EntryDirectoryFlag) > 0)
-                            parent.ChildrenDirectories.Add(Directories[child]);
+                        {
+                            parent.ChildrenDirectories.Add(directories[child]);
+                            directories[child].Parent = parent;
+                        }
                         else
-                            parent.ChildrenFiles.Add(Files[child]);
+                        {
+                            parent.ChildrenFiles.Add(files[child]);
+                            files[child].Parent = parent;
+                        }
                     }
                 }
             }

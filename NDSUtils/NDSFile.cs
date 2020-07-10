@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace NDSUtils
 {
@@ -8,14 +9,9 @@ namespace NDSUtils
         public NDSFilesystem Filesystem { get; private set; }
 
         /// <summary>
-        /// The parent directory's entry ID.
-        /// </summary>
-        public ushort ParentID { get; private set; }
-
-        /// <summary>
         /// The containing directory of this file.
         /// </summary>
-        public NDSDirectory Parent { get => Filesystem.Directories.TryGetValue(ParentID, out var val) ? val : null; }
+        public NDSDirectory Parent { get; set; }
         public string FullPath => (Parent?.FullPath ?? "") + "/" + Name;
 
         /// <summary>
@@ -31,12 +27,11 @@ namespace NDSUtils
         ByteSlice RawFAT => Filesystem.ROM.Data.Slice((int)Filesystem.ROM.Header.FATAddress, (int)Filesystem.ROM.Header.FATSize);
         const int FATEntrySize = 8;
 
-        public NDSFile(NDSFilesystem fs, ushort entryID, string name, ushort parentID)
+        public NDSFile(NDSFilesystem fs, ushort entryID, string name)
         {
             Filesystem = fs;
             EntryID = entryID;
             Name = name;
-            ParentID = parentID;
         }
 
         public virtual ByteSlice RetrieveContents()
@@ -45,6 +40,21 @@ namespace NDSUtils
             uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
             uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
             return Filesystem.ROM.Data.Slice((int)lowerBound, (int)(upperBound - lowerBound));
+        }
+
+        /// <summary>
+        /// Replaces this file in the containing directory with another one.
+        /// </summary>
+        public void ReplaceWith(NDSFile file)
+        {
+            for(int i = 0; i < Parent.ChildrenFiles.Count; i++)
+            {
+                if(Parent.ChildrenFiles[i] == this)
+                {
+                    Parent.ChildrenFiles[i] = file;
+                    return;
+                }
+            }
         }
     }
 
@@ -55,7 +65,7 @@ namespace NDSUtils
     {
         public string ExternalFilepath { get; private set; }
 
-        public NDSExternalFile(NDSFilesystem fs, ushort entryID, string name, ushort parentID, string externalFilepath) : base(fs, entryID, name, parentID) => ExternalFilepath = externalFilepath;
+        public NDSExternalFile(NDSFilesystem fs, ushort entryID, string name, string externalFilepath) : base(fs, entryID, name) => ExternalFilepath = externalFilepath;
 
         public override ByteSlice RetrieveContents()
         {
