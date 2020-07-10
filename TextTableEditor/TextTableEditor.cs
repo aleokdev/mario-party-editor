@@ -6,10 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using NDSUtils;
 
-namespace MarioPartyEditor
+namespace TextTableEditor
 {
-    public partial class TextEditor : Form
+    public partial class TextTableEditor : Form
     {
         string filepathEditing;
         long _originalFileSize;
@@ -24,7 +25,7 @@ namespace MarioPartyEditor
         }
         long newFileSize;
 
-        public TextEditor(string fileToEdit)
+        public TextTableEditor(string fileToEdit)
         {
             InitializeComponent();
             filepathEditing = fileToEdit;
@@ -53,24 +54,6 @@ namespace MarioPartyEditor
             }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            // TODO: Move this to the main form, create patch every time after closing any editor
-            var tempNewFilePath = Path.GetTempFileName();
-            using (var tempNewFile = File.OpenWrite(tempNewFilePath))
-                tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
-            string relativeEditingPath =
-                Uri.UnescapeDataString(
-                    new Uri(EditorData.GamePath).MakeRelativeUri(new Uri(filepathEditing))
-                        .ToString()
-                        .Replace('/', Path.DirectorySeparatorChar)
-                    );
-            var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
-            Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
-            Util.XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
-            base.OnClosed(e);
-        }
-
         void updateFileSizeLabel()
         {
             fileSizeLabel.Text = $"{newFileSize} / {originalFileSize}";
@@ -88,8 +71,6 @@ namespace MarioPartyEditor
         string[] readTexts(BinaryReader reader)
         {
             uint textCount = reader.ReadUInt32();
-            if (textCount > 64) // This doesn't look like a valid text file...
-                return null;
             var textAddresses = new uint[textCount];
             for (int textIndex = 0; textIndex < textCount; textIndex++)
             {

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
-using MarioPartyEditor.Util;
 
-namespace MarioPartyEditor.ROM
+namespace NDSUtils
 {
 
     public class NDSHeader

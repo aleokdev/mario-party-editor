@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MarioPartyEditor.Util;
 
-namespace MarioPartyEditor.ROM
+namespace NDSUtils
 {
     public class NDSFilesystem
     {

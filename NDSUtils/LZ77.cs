@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MarioPartyEditor.Util
+namespace NDSUtils
 {
     public static class LZ77
     {

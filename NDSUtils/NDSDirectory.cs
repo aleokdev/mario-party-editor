@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MarioPartyEditor.ROM
+namespace NDSUtils
 {
     public class NDSDirectory
     {

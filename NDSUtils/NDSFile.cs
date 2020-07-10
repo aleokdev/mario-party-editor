@@ -1,8 +1,7 @@
-﻿using MarioPartyEditor.Util;
-using System;
+﻿using System;
 using System.IO;
 
-namespace MarioPartyEditor.ROM
+namespace NDSUtils
 {
     public class NDSFile
     {

@@ -1,5 +1,4 @@
-﻿using MarioPartyEditor.ROM;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -7,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NDSUtils;
+using TextTableEditor;
 
 namespace MarioPartyEditor
 {
@@ -63,7 +64,7 @@ namespace MarioPartyEditor
                                           let attributes = type.GetCustomAttributes(typeof(FileFormatCheckerAttribute))
                                           where attributes.Count() > 0 && (bool)type.GetMethods().First().Invoke(null, new object[] { file })
                                           select ((FileFormatCheckerAttribute)attributes.First()).FormatName).FirstOrDefault() ?? "Unknown";
-                    string compressionType = Util.LZ77.IsCompressed(file) ? "LZ77 compressed" : "Uncompressed";
+                    string compressionType = LZ77.IsCompressed(file) ? "LZ77 compressed" : "Uncompressed";
                     // TODO: Move to Util (IsPatched, GetPatchPath, etc)
                     string relativeFilePath =
                 Uri.UnescapeDataString(
@@ -80,7 +81,7 @@ namespace MarioPartyEditor
                     newNode.Tag = file;
                     if (isPatched)
                         newNode.BackColor = Color.PaleVioletRed;
-                    if (Util.LZ77.IsCompressed(file))
+                    if (LZ77.IsCompressed(file))
                         newNode.ImageKey = "LZ77File";
                 }
             }
@@ -99,9 +100,25 @@ namespace MarioPartyEditor
 
         private void loadTextEditorButton_Click(object sender, EventArgs e)
         {
-            var editor = new TextEditor(SelectedFile);
+            string filepathEditing = SelectedFile;
+            var editor = new TextTableEditor.TextTableEditor(filepathEditing);
             editor.Show(this);
-            editor.FormClosed += (_, __) => updateFilesystemView(EditorData.GamePath);
+            editor.FormClosed += (_, __) =>
+            {
+                var tempNewFilePath = Path.GetTempFileName();
+                using (var tempNewFile = File.OpenWrite(tempNewFilePath))
+                    tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
+                string relativeEditingPath =
+                    Uri.UnescapeDataString(
+                        new Uri(EditorData.GamePath).MakeRelativeUri(new Uri(filepathEditing))
+                            .ToString()
+                            .Replace('/', Path.DirectorySeparatorChar)
+                        );
+                var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
+                Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
+                XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
+                updateFilesystemView(EditorData.GamePath);
+            };
         }
 
         private void openWithButton_Click(object sender, EventArgs e)
@@ -124,11 +141,11 @@ namespace MarioPartyEditor
             if (result == DialogResult.OK)
             {
                 Console.WriteLine($"Loading file {dialog.FileName}...");
-                NDSROM rom = new NDSROM();
+                NDSUtils.NDSROM rom = new NDSUtils.NDSROM();
 
                 using (var romFile = File.OpenRead(dialog.FileName))
                 {
-                    rom.Data = new Util.ByteSlice(new byte[romFile.Length], rom.Data.SliceStart, rom.Data.SliceEnd);
+                    rom.Data = new ByteSlice(new byte[romFile.Length], rom.Data.SliceStart, rom.Data.SliceEnd);
                     romFile.Read(rom.Data.Source, 0, (int)romFile.Length);
                 }
 
@@ -142,7 +159,7 @@ namespace MarioPartyEditor
 
                     rom.Filesystem.Initialize();
                     Console.WriteLine("Loading done.");
-                    void extractDirectory(NDSDirectory dir)
+                    void extractDirectory(NDSUtils.NDSDirectory dir)
                     {
                         foreach (var childDirectory in dir.ChildrenDirectories)
                         {
@@ -184,7 +201,7 @@ namespace MarioPartyEditor
                 Directory.CreateDirectory(Path.GetDirectoryName(decompressedPath));
                 using (var decompressedFile = File.OpenWrite(decompressedPath))
                 {
-                    var decompressedData = Util.LZ77.Decompress(new Util.ByteSlice(contents));
+                    var decompressedData = LZ77.Decompress(new ByteSlice(contents));
                     decompressedFile.Write(decompressedData, 0, decompressedData.Length);
                 }
             }

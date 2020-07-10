@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace MarioPartyEditor.Util
+namespace NDSUtils
 {
     // Adapted from https://blog.traal.eu/29/
 
@@ -24,7 +18,7 @@ namespace MarioPartyEditor.Util
                 UseShellExecute = false,
                 FileName = "xdelta3.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = $"-e -s {sourcePath} {targetPath} {patchPath}"
+                Arguments = $"-e -s \"{sourcePath}\" \"{targetPath}\" \"{patchPath}\""
             };
 
             await Task.Run(() =>
@@ -45,7 +39,7 @@ namespace MarioPartyEditor.Util
                 UseShellExecute = false,
                 FileName = "xdelta3.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = $"-d -s {sourcePath} {patchPath} {newFilePath}"
+                Arguments = $"-d -s \"{sourcePath}\" \"{patchPath}\" \"{newFilePath}\""
             };
 
             await Task.Run(() =>

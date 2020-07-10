@@ -1,6 +1,6 @@
-﻿namespace MarioPartyEditor
+﻿namespace TextTableEditor
 {
-    partial class TextEditor
+    partial class TextTableEditor
     {
         /// <summary>
         /// Required designer variable.
