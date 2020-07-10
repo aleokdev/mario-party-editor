@@ -153,13 +153,13 @@ namespace MarioPartyEditor
                 string ndsFolderPath = Path.Combine(dataFolderPath, rom.Header.GameCode);
 
                 // Only extract contents of NDS if not extracted before
-                if(!Directory.Exists(ndsFolderPath))
+                if(!Directory.Exists(Path.Combine(ndsFolderPath, "data")))
                 {
                     Directory.CreateDirectory(ndsFolderPath);
 
                     rom.Filesystem.Initialize();
                     Console.WriteLine("Loading done.");
-                    void extractDirectory(NDSUtils.NDSDirectory dir)
+                    void extractDirectory(NDSDirectory dir)
                     {
                         foreach (var childDirectory in dir.ChildrenDirectories)
                         {
@@ -177,7 +177,8 @@ namespace MarioPartyEditor
                         }
                     }
 
-                    extractDirectory(rom.Filesystem.RootDirectory);
+                    extractDirectory(rom.Filesystem.RootDataDirectory);
+                    extractDirectory(rom.Filesystem.RootOverlayDirectory);
                 }
                 
                 EditorData.GamePath = ndsFolderPath;

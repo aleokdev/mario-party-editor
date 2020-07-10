@@ -9,7 +9,8 @@ namespace NDSUtils
     {
         public NDSROM ROM { get; private set; }
 
-        public NDSDirectory RootDirectory;
+        public NDSDirectory RootDataDirectory;
+        public NDSDirectory RootOverlayDirectory;
 
         /// <summary>
         /// Retrieves the File Name Table from the ROM.
@@ -38,6 +39,13 @@ namespace NDSUtils
             // We create a dictionary for children before setting them because folders/files may be out of order
             // and parents may not exist before referencing them.
             var childrenStructure = new Dictionary<ushort, List<ushort>>();
+
+            // Everything before this entry in the FAT is an overlay file.
+            ushort firstDataFileID = BitConverter.ToUInt16(RawFNT.Slice(sizeof(uint), sizeof(ushort)).GetAsArrayCopy(), startIndex: 0);
+            // 0xFFFF is just a fictional ID used for convenience.
+            RootOverlayDirectory = new NDSDirectory(this, 0xFFFF, "overlay");
+            for (ushort overlayID = 0; overlayID < firstDataFileID; overlayID++)
+                RootOverlayDirectory.ChildrenFiles.Add(new NDSFile(this, overlayID, $"overlay_{overlayID}") { Parent = RootOverlayDirectory });
 
             for (int currentRelativeAddress = 0; currentRelativeAddress < dirEntriesAddrLimit; currentRelativeAddress += DirectoryEntrySize)
             {
@@ -71,7 +79,7 @@ namespace NDSUtils
 
                         // If the parent is not a directory, then this entry represents the root directory (/data/)
                         if ((parentDirID & EntryDirectoryFlag) == 0)
-                            RootDirectory = directory;
+                            RootDataDirectory = directory;
                         else
                         {
                             childrenStructure.TryGetValue(containerDirID, out var parent);
@@ -140,6 +148,40 @@ namespace NDSUtils
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Updates the ROM to reflect the filesystem's contents. This method will NOT change the header of the ROM, nor any sensitive data.
+        /// For now, only updates the FAT & file data, not the FNT.
+        /// </summary>
+        public void PackToROM()
+        {
+            ByteSlice rawFAT = ROM.Data.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
+            ByteSlice[] protectedMemory = new ByteSlice[]
+            {
+                ROM.Header.Data,
+                RawFNT,
+                rawFAT
+            };
+
+            void SaveFile(NDSFile file)
+            {
+
+            }
+
+            void SaveDir(NDSDirectory dir)
+            {
+                foreach(var child in dir.ChildrenDirectories)
+                {
+                    SaveDir(child);
+                }
+                foreach (var child in dir.ChildrenFiles)
+                {
+                    SaveFile(child);
+                }
+            }
+
+            SaveDir(RootDataDirectory);
         }
     }
 }
