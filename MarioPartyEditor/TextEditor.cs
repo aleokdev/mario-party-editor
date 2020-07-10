@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MarioPartyEditor
@@ -57,12 +55,19 @@ namespace MarioPartyEditor
 
         protected override void OnClosed(EventArgs e)
         {
+            // TODO: Move this to the main form, create patch every time after closing any editor
             var tempNewFilePath = Path.GetTempFileName();
             using (var tempNewFile = File.OpenWrite(tempNewFilePath))
                 tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
-            var patchPath = Path.Combine(Path.GetDirectoryName(filepathEditing), "patch", Path.ChangeExtension(Path.GetFileName(filepathEditing), "xdelta"));
+            string relativeEditingPath =
+                Uri.UnescapeDataString(
+                    new Uri(EditorData.GamePath).MakeRelativeUri(new Uri(filepathEditing))
+                        .ToString()
+                        .Replace('/', Path.DirectorySeparatorChar)
+                    );
+            var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
             Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
-            XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
+            Util.XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
             base.OnClosed(e);
         }
 

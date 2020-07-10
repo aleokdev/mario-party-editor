@@ -7,14 +7,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MarioPartyEditor
+namespace MarioPartyEditor.Util
 {
     // Adapted from https://blog.traal.eu/29/
 
     public class XDelta
     {
         /// <summary>
-        /// Creates xdelta3 patch from source to target.
+        /// Creates a xdelta3 patch from source to target.
         /// </summary>
         public static async void CreatePatch(string targetPath, string sourcePath, string patchPath)
         {
@@ -35,7 +35,7 @@ namespace MarioPartyEditor
         }
 
         /// <summary>
-        /// Applies xdelta3 patch to source.
+        /// Applies a xdelta3 patch to source.
         /// </summary>
         public static async void ApplyPatch(string patchPath, string sourcePath, string newFilePath)
         {

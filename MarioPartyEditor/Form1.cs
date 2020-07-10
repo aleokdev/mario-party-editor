@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MarioPartyEditor.ROM;
+using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
-using MarioPartyEditor.ROM;
 
 namespace MarioPartyEditor
 {
@@ -58,13 +57,27 @@ namespace MarioPartyEditor
                 foreach (var file in Directory.EnumerateFiles(path))
                 {
                     using var fstream = File.OpenRead(file);
+                    // TODO: Cache file formats
                     var fileFormatName = (from type in Assembly.GetExecutingAssembly().GetTypes()
                                           let attributes = type.GetCustomAttributes(typeof(FileFormatCheckerAttribute))
                                           where attributes.Count() > 0 && (bool)type.GetMethods().First().Invoke(null, new object[] { file })
                                           select ((FileFormatCheckerAttribute)attributes.First()).FormatName).FirstOrDefault() ?? "Unknown";
+                    string compressionType = Util.LZ77.IsCompressed(file) ? "LZ77 compressed" : "Uncompressed";
+                    // TODO: Move to Util (IsPatched, GetPatchPath, etc)
+                    string relativeFilePath =
+                Uri.UnescapeDataString(
+                    new Uri(EditorData.GamePath).MakeRelativeUri(new Uri(file))
+                        .ToString()
+                        .Replace('/', Path.DirectorySeparatorChar)
+                    );
+                    var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeFilePath, "xdelta"));
+                    bool isPatched = File.Exists(patchPath);
 
-                    var nodeName = $"{Path.GetFileName(file)} [{fileFormatName}]";
-                    parentNode.Nodes.Add(nodeName).Tag = file;
+                    var nodeName = $"{Path.GetFileName(file)} [{compressionType} {fileFormatName}]";
+                    TreeNode newNode = parentNode.Nodes.Add(nodeName);
+                    newNode.Tag = file;
+                    if (isPatched)
+                        newNode.BackColor = Color.PaleVioletRed;
                 }
             }
 
@@ -81,7 +94,11 @@ namespace MarioPartyEditor
         }
 
         private void loadTextEditorButton_Click(object sender, EventArgs e)
-            => new TextEditor(SelectedFile).Show(this);
+        {
+            var editor = new TextEditor(SelectedFile);
+            editor.Show(this);
+            editor.FormClosed += (_, __) => updateFilesystemView(EditorData.GamePath);
+        }
 
         private void openWithButton_Click(object sender, EventArgs e)
         {
@@ -107,36 +124,57 @@ namespace MarioPartyEditor
 
                 using (var romFile = File.OpenRead(dialog.FileName))
                 {
-                    rom.Data = new ByteSlice(new byte[romFile.Length], rom.Data.SliceStart, rom.Data.SliceEnd);
+                    rom.Data = new Util.ByteSlice(new byte[romFile.Length], rom.Data.SliceStart, rom.Data.SliceEnd);
                     romFile.Read(rom.Data.Source, 0, (int)romFile.Length);
                 }
 
                 string dataFolderPath = Path.Combine(Path.GetDirectoryName(dialog.FileName), DefaultDataFolderName);
                 string ndsFolderPath = Path.Combine(dataFolderPath, rom.Header.GameCode);
-                Directory.CreateDirectory(ndsFolderPath);
 
-                rom.Filesystem.Initialize();
-                Console.WriteLine("Loading done.");
-                void extractDirectory(NDSDirectory dir)
+                // Only extract contents of NDS if not extracted before
+                if(!Directory.Exists(ndsFolderPath))
                 {
-                    foreach (var childDirectory in dir.ChildrenDirectories)
+                    Directory.CreateDirectory(ndsFolderPath);
+
+                    rom.Filesystem.Initialize();
+                    Console.WriteLine("Loading done.");
+                    void extractDirectory(NDSDirectory dir)
                     {
-                        extractDirectory(childDirectory);
-                    }
-                    foreach (var childFile in dir.ChildrenFiles)
-                    {
-                        var filePath = Path.Combine(ndsFolderPath, childFile.FullPath.TrimStart('/'));
-                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                        using(var file = File.OpenWrite(filePath))
+                        foreach (var childDirectory in dir.ChildrenDirectories)
                         {
-                            var contents = childFile.RetrieveContents();
-                            file.Write(contents.GetAsArrayCopy(), 0, contents.Size);
+                            extractDirectory(childDirectory);
+                        }
+                        foreach (var childFile in dir.ChildrenFiles)
+                        {
+                            var filePath = Path.Combine(ndsFolderPath, childFile.FullPath.TrimStart('/'));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                            using (var file = File.OpenWrite(filePath))
+                            {
+                                var contents = childFile.RetrieveContents();
+                                file.Write(contents.GetAsArrayCopy(), 0, contents.Size);
+                            }
                         }
                     }
-                }
 
-                extractDirectory(rom.Filesystem.RootDirectory);
+                    extractDirectory(rom.Filesystem.RootDirectory);
+                }
+                
                 EditorData.GamePath = ndsFolderPath;
+            }
+        }
+
+        private void uncompressLZ77Button_Click(object sender, EventArgs e)
+        {
+            using(var file = File.OpenRead(SelectedFile))
+            {
+                var contents = new byte[file.Length];
+                file.Read(contents, 0, (int)file.Length);
+
+                using (var decompressedFile = File.OpenWrite(SelectedFile + ".decompressed"))
+                {
+                    var decompressedData = Util.LZ77.Decompress(new Util.ByteSlice(contents));
+                    decompressedFile.Write(decompressedData, 0, decompressedData.Length);
+                }
             }
         }
     }

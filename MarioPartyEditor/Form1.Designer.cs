@@ -33,11 +33,12 @@
             this.filesystemView = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.loadGameButton = new System.Windows.Forms.ToolStripButton();
+            this.loadNDSButton = new System.Windows.Forms.ToolStripButton();
             this.mainContainer = new System.Windows.Forms.SplitContainer();
             this.openWithButton = new System.Windows.Forms.Button();
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
-            this.loadNDSButton = new System.Windows.Forms.ToolStripButton();
+            this.uncompressLZ77Button = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -86,6 +87,16 @@
             this.loadGameButton.Text = "Load Filesystem";
             this.loadGameButton.Click += new System.EventHandler(this.loadGameButton_Click);
             // 
+            // loadNDSButton
+            // 
+            this.loadNDSButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.loadNDSButton.Image = ((System.Drawing.Image)(resources.GetObject("loadNDSButton.Image")));
+            this.loadNDSButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.loadNDSButton.Name = "loadNDSButton";
+            this.loadNDSButton.Size = new System.Drawing.Size(84, 22);
+            this.loadNDSButton.Text = "Load NDS File";
+            this.loadNDSButton.Click += new System.EventHandler(this.loadNDSButton_Click);
+            // 
             // mainContainer
             // 
             this.mainContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -100,6 +111,7 @@
             // 
             // mainContainer.Panel2
             // 
+            this.mainContainer.Panel2.Controls.Add(this.uncompressLZ77Button);
             this.mainContainer.Panel2.Controls.Add(this.openWithButton);
             this.mainContainer.Panel2.Controls.Add(this.selectedFileLinkText);
             this.mainContainer.Panel2.Controls.Add(label1);
@@ -144,15 +156,15 @@
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
             this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
             // 
-            // loadNDSButton
+            // uncompressLZ77Button
             // 
-            this.loadNDSButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.loadNDSButton.Image = ((System.Drawing.Image)(resources.GetObject("loadNDSButton.Image")));
-            this.loadNDSButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.loadNDSButton.Name = "loadNDSButton";
-            this.loadNDSButton.Size = new System.Drawing.Size(84, 22);
-            this.loadNDSButton.Text = "Load NDS File";
-            this.loadNDSButton.Click += new System.EventHandler(this.loadNDSButton_Click);
+            this.uncompressLZ77Button.Location = new System.Drawing.Point(7, 140);
+            this.uncompressLZ77Button.Name = "uncompressLZ77Button";
+            this.uncompressLZ77Button.Size = new System.Drawing.Size(262, 23);
+            this.uncompressLZ77Button.TabIndex = 4;
+            this.uncompressLZ77Button.Text = "Uncompress LZ77";
+            this.uncompressLZ77Button.UseVisualStyleBackColor = true;
+            this.uncompressLZ77Button.Click += new System.EventHandler(this.uncompressLZ77Button_Click);
             // 
             // Form1
             // 
@@ -185,6 +197,7 @@
         private System.Windows.Forms.LinkLabel selectedFileLinkText;
         private System.Windows.Forms.Button openWithButton;
         private System.Windows.Forms.ToolStripButton loadNDSButton;
+        private System.Windows.Forms.Button uncompressLZ77Button;
     }
 }
 

@@ -4,8 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MarioPartyEditor.ROM
+namespace MarioPartyEditor.Util
 {
+    public static class ArrayHelpers
+    {
+        public static T[] SubArray<T>(this T[] data, int index, int length)
+        {
+            T[] result = new T[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+    }
+
     public struct ByteSlice
     {
         public byte[] Source { get; set; }
