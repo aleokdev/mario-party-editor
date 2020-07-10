@@ -1,5 +1,6 @@
 ﻿using MarioPartyEditor.Util;
 using System;
+using System.IO;
 
 namespace MarioPartyEditor.ROM
 {
@@ -39,12 +40,32 @@ namespace MarioPartyEditor.ROM
             ParentID = parentID;
         }
 
-        public ByteSlice RetrieveContents()
+        public virtual ByteSlice RetrieveContents()
         {
             var fatEntry = RawFAT.Slice(EntryID * FATEntrySize, FATEntrySize);
             uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
             uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
             return Filesystem.ROM.Data.Slice((int)lowerBound, (int)(upperBound - lowerBound));
+        }
+    }
+
+    /// <summary>
+    /// Simulates a NDSFile with data that is outside of the ROM.
+    /// </summary>
+    public sealed class NDSExternalFile : NDSFile
+    {
+        public string ExternalFilepath { get; private set; }
+
+        public NDSExternalFile(NDSFilesystem fs, ushort entryID, string name, ushort parentID, string externalFilepath) : base(fs, entryID, name, parentID) => ExternalFilepath = externalFilepath;
+
+        public override ByteSlice RetrieveContents()
+        {
+            using(var file = File.OpenRead(ExternalFilepath))
+            {
+                byte[] contents = new byte[file.Length];
+                file.Read(contents, 0, (int)file.Length);
+                return new ByteSlice(contents);
+            }
         }
     }
 }
