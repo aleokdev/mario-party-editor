@@ -110,6 +110,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\LZ77Icon.png" />
+    <None Include="Icons\icons8-page-16.png" />
+    <None Include="Icons\icons8-zip-16.png" />
     <Content Include="xdelta3.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

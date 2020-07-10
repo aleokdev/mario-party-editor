@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarioPartyEditor.Util
 {
@@ -12,8 +7,7 @@ namespace MarioPartyEditor.Util
     {
         public static byte[] Decompress(ByteSlice data)
         {
-            // LZ77 in Mario Party DS always starts with 0x10
-            if (data[0] != 0x10) throw new Exception("This doesn't appear to be LZ77 compressed data.");
+            // LZ77 in Mario Party DS always starts with an unknown byte
 
             // Don't ask how this works, I still have to figure it out myself...
             // Adapted from https://github.com/Dirbaio/NSMB-Editor/blob/master/NSMBe4/ROM.cs

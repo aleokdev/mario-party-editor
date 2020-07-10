@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.filesystemView = new System.Windows.Forms.TreeView();
@@ -39,6 +40,7 @@
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
             this.uncompressLZ77Button = new System.Windows.Forms.Button();
+            this.iconList = new System.Windows.Forms.ImageList(this.components);
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -61,8 +63,11 @@
             this.filesystemView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.filesystemView.ImageKey = "Unknown";
+            this.filesystemView.ImageList = this.iconList;
             this.filesystemView.Location = new System.Drawing.Point(3, 3);
             this.filesystemView.Name = "filesystemView";
+            this.filesystemView.SelectedImageIndex = 0;
             this.filesystemView.Size = new System.Drawing.Size(494, 404);
             this.filesystemView.TabIndex = 1;
             // 
@@ -158,13 +163,23 @@
             // 
             // uncompressLZ77Button
             // 
-            this.uncompressLZ77Button.Location = new System.Drawing.Point(7, 140);
+            this.uncompressLZ77Button.Location = new System.Drawing.Point(3, 140);
             this.uncompressLZ77Button.Name = "uncompressLZ77Button";
-            this.uncompressLZ77Button.Size = new System.Drawing.Size(262, 23);
+            this.uncompressLZ77Button.Size = new System.Drawing.Size(266, 23);
             this.uncompressLZ77Button.TabIndex = 4;
             this.uncompressLZ77Button.Text = "Uncompress LZ77";
             this.uncompressLZ77Button.UseVisualStyleBackColor = true;
             this.uncompressLZ77Button.Click += new System.EventHandler(this.uncompressLZ77Button_Click);
+            // 
+            // iconList
+            // 
+            this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
+            this.iconList.TransparentColor = System.Drawing.Color.Transparent;
+            this.iconList.Images.SetKeyName(0, "Text");
+            this.iconList.Images.SetKeyName(1, "Folder");
+            this.iconList.Images.SetKeyName(2, "Unknown");
+            this.iconList.Images.SetKeyName(3, "LZ77");
+            this.iconList.Images.SetKeyName(4, "Text Database");
             // 
             // Form1
             // 
@@ -198,6 +213,7 @@
         private System.Windows.Forms.Button openWithButton;
         private System.Windows.Forms.ToolStripButton loadNDSButton;
         private System.Windows.Forms.Button uncompressLZ77Button;
+        private System.Windows.Forms.ImageList iconList;
     }
 }
 

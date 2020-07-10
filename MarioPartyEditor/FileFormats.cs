@@ -14,7 +14,7 @@ namespace MarioPartyEditor
         }
     }
 
-    [FileFormatChecker("Text Table")]
+    [FileFormatChecker("Text Database")]
     public static class TextTableFileFormat
     {
         public static bool Check(string filepath)

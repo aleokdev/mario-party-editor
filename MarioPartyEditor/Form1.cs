@@ -51,6 +51,7 @@ namespace MarioPartyEditor
                 foreach (var dir in Directory.EnumerateDirectories(path))
                 {
                     var dirNode = parentNode.Nodes.Add(Path.GetFileName(dir));
+                    dirNode.ImageKey = "Folder";
                     recurseFiles(dirNode, dir);
                 }
 
@@ -75,9 +76,12 @@ namespace MarioPartyEditor
 
                     var nodeName = $"{Path.GetFileName(file)} [{compressionType} {fileFormatName}]";
                     TreeNode newNode = parentNode.Nodes.Add(nodeName);
+                    newNode.ImageKey = fileFormatName;
                     newNode.Tag = file;
                     if (isPatched)
                         newNode.BackColor = Color.PaleVioletRed;
+                    if (Util.LZ77.IsCompressed(file))
+                        newNode.ImageKey = "LZ77File";
                 }
             }
 
@@ -170,12 +174,22 @@ namespace MarioPartyEditor
                 var contents = new byte[file.Length];
                 file.Read(contents, 0, (int)file.Length);
 
-                using (var decompressedFile = File.OpenWrite(SelectedFile + ".decompressed"))
+                string relativeFilePath =
+                Uri.UnescapeDataString(
+                    new Uri(EditorData.GamePath).MakeRelativeUri(new Uri(SelectedFile))
+                        .ToString()
+                        .Replace('/', Path.DirectorySeparatorChar)
+                    );
+                string decompressedPath = Path.Combine(EditorData.GamePath, "decompressed", relativeFilePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(decompressedPath));
+                using (var decompressedFile = File.OpenWrite(decompressedPath))
                 {
                     var decompressedData = Util.LZ77.Decompress(new Util.ByteSlice(contents));
                     decompressedFile.Write(decompressedData, 0, decompressedData.Length);
                 }
             }
+
+            updateFilesystemView(EditorData.GamePath);
         }
     }
 }
