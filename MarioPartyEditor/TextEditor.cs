@@ -55,6 +55,17 @@ namespace MarioPartyEditor
             }
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            var tempNewFilePath = Path.GetTempFileName();
+            using (var tempNewFile = File.OpenWrite(tempNewFilePath))
+                tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
+            var patchPath = Path.Combine(Path.GetDirectoryName(filepathEditing), "patch", Path.ChangeExtension(Path.GetFileName(filepathEditing), "xdelta"));
+            Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
+            XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
+            base.OnClosed(e);
+        }
+
         void updateFileSizeLabel()
         {
             fileSizeLabel.Text = $"{newFileSize} / {originalFileSize}";

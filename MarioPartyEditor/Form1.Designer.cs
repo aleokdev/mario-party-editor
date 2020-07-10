@@ -34,9 +34,10 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.loadGameButton = new System.Windows.Forms.ToolStripButton();
             this.mainContainer = new System.Windows.Forms.SplitContainer();
+            this.openWithButton = new System.Windows.Forms.Button();
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
-            this.openWithButton = new System.Windows.Forms.Button();
+            this.loadNDSButton = new System.Windows.Forms.ToolStripButton();
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -67,7 +68,8 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadGameButton});
+            this.loadGameButton,
+            this.loadNDSButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -107,6 +109,18 @@
             this.mainContainer.SplitterDistance = 500;
             this.mainContainer.TabIndex = 3;
             // 
+            // openWithButton
+            // 
+            this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.openWithButton.Location = new System.Drawing.Point(3, 94);
+            this.openWithButton.Name = "openWithButton";
+            this.openWithButton.Size = new System.Drawing.Size(266, 39);
+            this.openWithButton.TabIndex = 3;
+            this.openWithButton.Text = "Open With...";
+            this.openWithButton.UseVisualStyleBackColor = true;
+            this.openWithButton.Click += new System.EventHandler(this.openWithButton_Click);
+            // 
             // selectedFileLinkText
             // 
             this.selectedFileLinkText.AutoSize = true;
@@ -130,17 +144,15 @@
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
             this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
             // 
-            // openWithButton
+            // loadNDSButton
             // 
-            this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.openWithButton.Location = new System.Drawing.Point(3, 94);
-            this.openWithButton.Name = "openWithButton";
-            this.openWithButton.Size = new System.Drawing.Size(266, 39);
-            this.openWithButton.TabIndex = 3;
-            this.openWithButton.Text = "Open With...";
-            this.openWithButton.UseVisualStyleBackColor = true;
-            this.openWithButton.Click += new System.EventHandler(this.openWithButton_Click);
+            this.loadNDSButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.loadNDSButton.Image = ((System.Drawing.Image)(resources.GetObject("loadNDSButton.Image")));
+            this.loadNDSButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.loadNDSButton.Name = "loadNDSButton";
+            this.loadNDSButton.Size = new System.Drawing.Size(84, 22);
+            this.loadNDSButton.Text = "Load NDS File";
+            this.loadNDSButton.Click += new System.EventHandler(this.loadNDSButton_Click);
             // 
             // Form1
             // 
@@ -172,6 +184,7 @@
         private System.Windows.Forms.Button loadTextEditorButton;
         private System.Windows.Forms.LinkLabel selectedFileLinkText;
         private System.Windows.Forms.Button openWithButton;
+        private System.Windows.Forms.ToolStripButton loadNDSButton;
     }
 }
 

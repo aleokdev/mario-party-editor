@@ -8,13 +8,43 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Itanium = Debug|Itanium
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Itanium = Release|Itanium
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		xdelta3-64|Any CPU = xdelta3-64|Any CPU
+		xdelta3-64|Itanium = xdelta3-64|Itanium
+		xdelta3-64|x64 = xdelta3-64|x64
+		xdelta3-64|x86 = xdelta3-64|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|Itanium.ActiveCfg = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|Itanium.Build.0 = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Debug|x86.Build.0 = Debug|Any CPU
 		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|Itanium.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|Itanium.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|x64.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.Release|x86.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|Any CPU.Build.0 = Debug|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|Itanium.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|Itanium.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|x64.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|x64.Build.0 = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|x86.ActiveCfg = Release|Any CPU
+		{ED972C09-A603-49DA-BA67-09A6A1CDBCE7}.xdelta3-64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
