@@ -27,7 +27,9 @@ More specifically:
 ----------------|-------------|-------------
 File Name Table | Header 0x40 | Header 0x44
 FAT             | Header 0x48 | Header 0x4C
+
 [Source](https://github.com/Roughsketch/mdnds/wiki/NDS-Format)
+
 For simplicity, let's assume these values are constant, since we can't change them anyways. This means that Mario Party DS
 has these constant values:
 
