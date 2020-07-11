@@ -32,15 +32,16 @@
             System.Windows.Forms.Label label1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.filesystemView = new System.Windows.Forms.TreeView();
+            this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.loadGameButton = new System.Windows.Forms.ToolStripButton();
             this.loadNDSButton = new System.Windows.Forms.ToolStripButton();
             this.mainContainer = new System.Windows.Forms.SplitContainer();
+            this.uncompressLZ77Button = new System.Windows.Forms.Button();
             this.openWithButton = new System.Windows.Forms.Button();
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
-            this.uncompressLZ77Button = new System.Windows.Forms.Button();
-            this.iconList = new System.Windows.Forms.ImageList(this.components);
+            this.packToROMButton = new System.Windows.Forms.ToolStripButton();
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -71,11 +72,22 @@
             this.filesystemView.Size = new System.Drawing.Size(494, 404);
             this.filesystemView.TabIndex = 1;
             // 
+            // iconList
+            // 
+            this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
+            this.iconList.TransparentColor = System.Drawing.Color.Transparent;
+            this.iconList.Images.SetKeyName(0, "Text");
+            this.iconList.Images.SetKeyName(1, "Folder");
+            this.iconList.Images.SetKeyName(2, "Unknown");
+            this.iconList.Images.SetKeyName(3, "LZ77");
+            this.iconList.Images.SetKeyName(4, "Text Database");
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadGameButton,
-            this.loadNDSButton});
+            this.loadNDSButton,
+            this.packToROMButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -126,6 +138,16 @@
             this.mainContainer.SplitterDistance = 500;
             this.mainContainer.TabIndex = 3;
             // 
+            // uncompressLZ77Button
+            // 
+            this.uncompressLZ77Button.Location = new System.Drawing.Point(3, 140);
+            this.uncompressLZ77Button.Name = "uncompressLZ77Button";
+            this.uncompressLZ77Button.Size = new System.Drawing.Size(266, 23);
+            this.uncompressLZ77Button.TabIndex = 4;
+            this.uncompressLZ77Button.Text = "Uncompress LZ77";
+            this.uncompressLZ77Button.UseVisualStyleBackColor = true;
+            this.uncompressLZ77Button.Click += new System.EventHandler(this.uncompressLZ77Button_Click);
+            // 
             // openWithButton
             // 
             this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -161,25 +183,15 @@
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
             this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
             // 
-            // uncompressLZ77Button
+            // packToROMButton
             // 
-            this.uncompressLZ77Button.Location = new System.Drawing.Point(3, 140);
-            this.uncompressLZ77Button.Name = "uncompressLZ77Button";
-            this.uncompressLZ77Button.Size = new System.Drawing.Size(266, 23);
-            this.uncompressLZ77Button.TabIndex = 4;
-            this.uncompressLZ77Button.Text = "Uncompress LZ77";
-            this.uncompressLZ77Button.UseVisualStyleBackColor = true;
-            this.uncompressLZ77Button.Click += new System.EventHandler(this.uncompressLZ77Button_Click);
-            // 
-            // iconList
-            // 
-            this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
-            this.iconList.TransparentColor = System.Drawing.Color.Transparent;
-            this.iconList.Images.SetKeyName(0, "Text");
-            this.iconList.Images.SetKeyName(1, "Folder");
-            this.iconList.Images.SetKeyName(2, "Unknown");
-            this.iconList.Images.SetKeyName(3, "LZ77");
-            this.iconList.Images.SetKeyName(4, "Text Database");
+            this.packToROMButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.packToROMButton.Image = ((System.Drawing.Image)(resources.GetObject("packToROMButton.Image")));
+            this.packToROMButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.packToROMButton.Name = "packToROMButton";
+            this.packToROMButton.Size = new System.Drawing.Size(81, 22);
+            this.packToROMButton.Text = "Pack To ROM";
+            this.packToROMButton.Click += new System.EventHandler(this.packToROMButton_Click);
             // 
             // Form1
             // 
@@ -214,6 +226,7 @@
         private System.Windows.Forms.ToolStripButton loadNDSButton;
         private System.Windows.Forms.Button uncompressLZ77Button;
         private System.Windows.Forms.ImageList iconList;
+        private System.Windows.Forms.ToolStripButton packToROMButton;
     }
 }
 

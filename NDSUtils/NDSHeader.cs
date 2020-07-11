@@ -52,5 +52,60 @@ namespace NDSUtils
             get => BitConverter.ToUInt32(Data.Slice(0x4C, sizeof(uint)).GetAsArrayCopy(), 0);
             set => Data.Slice(0x4C, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
         }
+
+        public uint ARM9CodeAddress
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x20, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x20, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM9CodeSize
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x2C, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x2C, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM7CodeAddress
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x30, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x30, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM7CodeSize
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x3C, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x3C, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM9OverlayTableAddress
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x50, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x50, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM9OverlayTableSize
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x54, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x54, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM7OverlayTableAddress
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x30, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x30, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint ARM7OverlayTableSize
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x58, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x58, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+
+        public uint BannerAddress
+        {
+            get => BitConverter.ToUInt32(Data.Slice(0x68, sizeof(uint)).GetAsArrayCopy(), 0);
+            set => Data.Slice(0x68, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(value)));
+        }
+        public uint BannerSize => 0x840;
     }
 }

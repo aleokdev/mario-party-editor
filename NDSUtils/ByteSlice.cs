@@ -73,10 +73,10 @@ namespace NDSUtils
             }
         }
 
-        bool Intersects(ByteSlice other)
+        public bool Intersects(ByteSlice other)
         {
             if (Source != other.Source) return false;
-            return (SliceEnd >= other.SliceStart && SliceEnd < other.SliceEnd) || (SliceStart >= other.SliceStart && SliceStart < other.SliceEnd);
+            return (SliceEnd > other.SliceStart && SliceEnd <= other.SliceEnd) || (SliceStart >= other.SliceStart && SliceStart < other.SliceEnd);
         }
     }
 }

@@ -157,16 +157,44 @@ namespace NDSUtils
         public void PackToROM()
         {
             ByteSlice rawFAT = ROM.Data.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
-            ByteSlice[] protectedMemory = new ByteSlice[]
+            const int fatEntrySize = 8;
+            ByteSlice[] protectedMemoryRanges = new ByteSlice[]
             {
                 ROM.Header.Data,
                 RawFNT,
-                rawFAT
+                rawFAT,
+                ROM.Data.Slice((int)ROM.Header.ARM9CodeAddress, (int)ROM.Header.ARM9CodeSize),
+                ROM.Data.Slice((int)ROM.Header.ARM7CodeAddress, (int)ROM.Header.ARM7CodeSize),
+                ROM.Data.Slice((int)ROM.Header.ARM9OverlayTableAddress, (int)ROM.Header.ARM9OverlayTableSize),
+                ROM.Data.Slice((int)ROM.Header.ARM7OverlayTableAddress, (int)ROM.Header.ARM7OverlayTableSize),
+                ROM.Data.Slice((int)ROM.Header.BannerAddress, (int)ROM.Header.BannerSize)
             };
+            uint lastFileSaveAddress = 0;
 
             void SaveFile(NDSFile file)
             {
+                int filesize = file.Size();
+                ByteSlice GetFileSlice() => ROM.Data.Slice((int)lastFileSaveAddress, filesize);
+                IEnumerable<ByteSlice> calculateRangesIntersecting() =>
+                    from range in protectedMemoryRanges where range.Intersects(GetFileSlice()) select range;
+                for (var rangesIntersecting = calculateRangesIntersecting();
+                    rangesIntersecting.Any();
+                    rangesIntersecting = calculateRangesIntersecting())
+                {
+                    lastFileSaveAddress = (uint)rangesIntersecting.First().SliceEnd;
+                }
+                Console.WriteLine($"Found space for file: {lastFileSaveAddress:X}");
+                if (lastFileSaveAddress + filesize > ROM.Data.SliceEnd) throw new Exception("No space in ROM to fit any more files!");
+                GetFileSlice().ReplaceWith(file.RetrieveContents());
+                Console.WriteLine($"Changed {filesize}B.");
 
+                var fileROMBounds = ROM.Data.Slice((int)lastFileSaveAddress, filesize);
+
+                // Change FAT entry (lower and upper bound)
+                rawFAT.Slice(file.EntryID * fatEntrySize, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceStart)));
+                rawFAT.Slice(file.EntryID * fatEntrySize + sizeof(uint), sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceEnd)));
+
+                lastFileSaveAddress += (uint)filesize;
             }
 
             void SaveDir(NDSDirectory dir)
@@ -182,6 +210,7 @@ namespace NDSUtils
             }
 
             SaveDir(RootDataDirectory);
+            SaveDir(RootOverlayDirectory);
         }
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="NDSFilesystem.cs" />
     <Compile Include="NDSHeader.cs" />
     <Compile Include="NDSROM.cs" />
+    <Compile Include="PathHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XDelta.cs" />
   </ItemGroup>

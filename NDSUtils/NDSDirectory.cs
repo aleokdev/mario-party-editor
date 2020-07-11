@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace NDSUtils
 {
@@ -33,6 +36,23 @@ namespace NDSUtils
             Filesystem = fs;
             EntryID = entryID;
             Name = name;
+        }
+
+        public NDSDirectory GetDirectory(string relativePath)
+        {
+            Console.WriteLine(relativePath);
+            var nextFolder = PathHelpers.GetFirstComponent(relativePath);
+            return (from dir in ChildrenDirectories
+                    where dir.Name == nextFolder
+                    select dir).FirstOrDefault()?.GetDirectory(relativePath.Replace(nextFolder + "/", "")) ?? this;
+        }
+
+        public NDSFile GetFile(string relativePath)
+        {
+            Console.WriteLine(relativePath);
+            return (from file in GetDirectory(PathHelpers.GetParent(relativePath)).ChildrenFiles
+                    where file.Name == Path.GetFileName(relativePath)
+                    select file).FirstOrDefault();
         }
     }
 }

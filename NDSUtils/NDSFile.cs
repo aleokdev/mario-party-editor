@@ -42,6 +42,14 @@ namespace NDSUtils
             return Filesystem.ROM.Data.Slice((int)lowerBound, (int)(upperBound - lowerBound));
         }
 
+        public virtual int Size()
+        {
+            var fatEntry = RawFAT.Slice(EntryID * FATEntrySize, FATEntrySize);
+            uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
+            uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
+            return (int)(upperBound - lowerBound);
+        }
+
         /// <summary>
         /// Replaces this file in the containing directory with another one.
         /// </summary>
@@ -76,5 +84,7 @@ namespace NDSUtils
                 return new ByteSlice(contents);
             }
         }
+
+        public override int Size() => (int)new FileInfo(ExternalFilepath).Length;
     }
 }
