@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using NDSUtils;
 
 namespace MarioPartyEditor
 {
@@ -17,13 +18,13 @@ namespace MarioPartyEditor
     [FileFormatChecker("Text Table")]
     public static class TextTableFileFormat
     {
-        public static bool Check(string filepath)
+        public static bool Check(NDSFile file)
         {
-            if (Path.GetExtension(filepath) != ".bin") return false;
+            if (Path.GetExtension(file.Name) != ".bin") return false;
             // The theoretical minimum size for a text table is the text count + first text address
             // + null byte as the first text.
             const uint minimumSize = sizeof(uint) + sizeof(uint) + 1;
-            if (new FileInfo(filepath).Length < minimumSize) return false;
+            if (file.Size < minimumSize) return false;
             return true;
         }
     }
@@ -31,18 +32,18 @@ namespace MarioPartyEditor
     [FileFormatChecker("Text")]
     public static class TextFileFormat
     {
-        public static bool Check(string filepath)
+        public static bool Check(NDSFile file)
         {
-            return Path.GetExtension(filepath) == ".txt";
+            return Path.GetExtension(file.Name) == ".txt";
         }
     }
 
     [FileFormatChecker("Sound Data")]
     public static class SoundDataFileFormat
     {
-        public static bool Check(string filepath)
+        public static bool Check(NDSFile file)
         {
-            return Path.GetExtension(filepath) == ".sdat";
+            return Path.GetExtension(file.Name) == ".sdat";
         }
     }
 }

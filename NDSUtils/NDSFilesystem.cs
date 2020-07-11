@@ -5,6 +5,7 @@ using System.Text;
 
 namespace NDSUtils
 {
+    [Serializable]
     public class NDSFilesystem
     {
         public NDSROM ROM { get; private set; }
@@ -150,31 +151,32 @@ namespace NDSUtils
             }
         }
 
+        // TODO: This is not the most elegant way to do this...
         /// <summary>
-        /// Updates the ROM to reflect the filesystem's contents. This method will NOT change the header of the ROM, nor any sensitive data.
-        /// For now, only updates the FAT & file data, not the FNT.
+        /// Updates a byteslice with the same size as the ROM to reflect the filesystem's contents. This method will NOT change the header of the ROM,
+        /// nor any sensitive data. For now, only updates the FAT & file data, not the FNT.
         /// </summary>
-        public void PackToROM()
+        public void PackTo(ByteSlice target)
         {
-            ByteSlice rawFAT = ROM.Data.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
+            ByteSlice rawFAT = target.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
             const int fatEntrySize = 8;
             ByteSlice[] protectedMemoryRanges = new ByteSlice[]
             {
                 ROM.Header.Data,
                 RawFNT,
                 rawFAT,
-                ROM.Data.Slice((int)ROM.Header.ARM9CodeAddress, (int)ROM.Header.ARM9CodeSize),
-                ROM.Data.Slice((int)ROM.Header.ARM7CodeAddress, (int)ROM.Header.ARM7CodeSize),
-                ROM.Data.Slice((int)ROM.Header.ARM9OverlayTableAddress, (int)ROM.Header.ARM9OverlayTableSize),
-                ROM.Data.Slice((int)ROM.Header.ARM7OverlayTableAddress, (int)ROM.Header.ARM7OverlayTableSize),
-                ROM.Data.Slice((int)ROM.Header.BannerAddress, (int)ROM.Header.BannerSize)
+                target.Slice((int)ROM.Header.ARM9CodeAddress, (int)ROM.Header.ARM9CodeSize),
+                target.Slice((int)ROM.Header.ARM7CodeAddress, (int)ROM.Header.ARM7CodeSize),
+                target.Slice((int)ROM.Header.ARM9OverlayTableAddress, (int)ROM.Header.ARM9OverlayTableSize),
+                target.Slice((int)ROM.Header.ARM7OverlayTableAddress, (int)ROM.Header.ARM7OverlayTableSize),
+                target.Slice((int)ROM.Header.BannerAddress, (int)ROM.Header.BannerSize)
             };
             uint lastFileSaveAddress = 0;
 
             void SaveFile(NDSFile file)
             {
-                int filesize = file.Size();
-                ByteSlice GetFileSlice() => ROM.Data.Slice((int)lastFileSaveAddress, filesize);
+                int filesize = file.Size;
+                ByteSlice GetFileSlice() => target.Slice((int)lastFileSaveAddress, filesize);
                 IEnumerable<ByteSlice> calculateRangesIntersecting() =>
                     from range in protectedMemoryRanges where range.Intersects(GetFileSlice()) select range;
                 for (var rangesIntersecting = calculateRangesIntersecting();
@@ -184,11 +186,11 @@ namespace NDSUtils
                     lastFileSaveAddress = (uint)rangesIntersecting.First().SliceEnd;
                 }
                 Console.WriteLine($"Found space for file: {lastFileSaveAddress:X}");
-                if (lastFileSaveAddress + filesize > ROM.Data.SliceEnd) throw new Exception("No space in ROM to fit any more files!");
-                GetFileSlice().ReplaceWith(file.RetrieveContents());
+                if (lastFileSaveAddress + filesize > target.SliceEnd) throw new Exception("No space in ROM to fit any more files!");
+                GetFileSlice().ReplaceWith(file.RetrievePatchedContents());
                 Console.WriteLine($"Changed {filesize}B.");
 
-                var fileROMBounds = ROM.Data.Slice((int)lastFileSaveAddress, filesize);
+                var fileROMBounds = target.Slice((int)lastFileSaveAddress, filesize);
 
                 // Change FAT entry (lower and upper bound)
                 rawFAT.Slice(file.EntryID * fatEntrySize, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceStart)));

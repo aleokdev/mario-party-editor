@@ -1,19 +1,21 @@
-﻿namespace MarioPartyEditor
+﻿using NDSUtils;
+
+namespace MarioPartyEditor
 {
     public static class EditorData
     {
-        static string _gamePath = null;
-        public static string GamePath
+        public static NDSROM _romEditing;
+        public static NDSROM ROMEditing
         {
-            get => _gamePath;
+            get => _romEditing;
             set
             {
-                OnGamePathChange.Invoke(_gamePath, value);
-                _gamePath = value;
+                OnROMEditingChange?.Invoke(_romEditing, value);
+                _romEditing = value;
             }
         }
 
-        public delegate void OnGamePathChangeHandler(string pathBefore, string pathAfter);
-        public static event OnGamePathChangeHandler OnGamePathChange;
+        public delegate void OnROMEditingChangeHandler(NDSROM romBefore, NDSROM romAfter);
+        public static event OnROMEditingChangeHandler OnROMEditingChange;
     }
 }

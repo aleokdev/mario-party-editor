@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace NDSUtils
 {
+    [Serializable]
     public class NDSFile
     {
         public NDSFilesystem Filesystem { get; private set; }
@@ -21,6 +23,8 @@ namespace NDSUtils
 
         public string Name { get; private set; }
 
+        public List<ByteSlice> Patches { get; set; } = new List<ByteSlice>();
+
         /// <summary>
         /// Retrieves the File Address Table from the ROM.
         /// </summary>
@@ -34,7 +38,11 @@ namespace NDSUtils
             Name = name;
         }
 
-        public virtual ByteSlice RetrieveContents()
+        /// <summary>
+        /// Returns the original file contents without patching.
+        /// </summary>
+        /// <returns></returns>
+        public virtual ByteSlice RetrieveOriginalContents()
         {
             var fatEntry = RawFAT.Slice(EntryID * FATEntrySize, FATEntrySize);
             uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
@@ -42,12 +50,31 @@ namespace NDSUtils
             return Filesystem.ROM.Data.Slice((int)lowerBound, (int)(upperBound - lowerBound));
         }
 
-        public virtual int Size()
+        /// <summary>
+        /// Returns the file contents completely patched up.
+        /// </summary>
+        /// <returns></returns>
+        public ByteSlice RetrievePatchedContents()
         {
-            var fatEntry = RawFAT.Slice(EntryID * FATEntrySize, FATEntrySize);
-            uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
-            uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
-            return (int)(upperBound - lowerBound);
+            ByteSlice originalData = RetrieveOriginalContents();
+            ByteSlice patchedData = new ByteSlice(originalData.GetAsArrayCopy());
+            foreach (var patch in Patches)
+            {
+                patchedData = XDelta.ApplyPatch(patch, patchedData);
+            }
+
+            return patchedData;
+        }
+
+        public virtual int Size
+        {
+            get
+            {
+                var fatEntry = RawFAT.Slice(EntryID * FATEntrySize, FATEntrySize);
+                uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
+                uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
+                return (int)(upperBound - lowerBound);
+            }
         }
 
         /// <summary>
@@ -76,7 +103,7 @@ namespace NDSUtils
 
         public NDSExternalFile(NDSFilesystem fs, ushort entryID, string name, string externalFilepath) : base(fs, entryID, name) => ExternalFilepath = externalFilepath;
 
-        public override ByteSlice RetrieveContents()
+        public override ByteSlice RetrieveOriginalContents()
         {
             using(var file = File.OpenRead(ExternalFilepath))
             {
@@ -86,6 +113,6 @@ namespace NDSUtils
             }
         }
 
-        public override int Size() => (int)new FileInfo(ExternalFilepath).Length;
+        public override int Size { get => (int)new FileInfo(ExternalFilepath).Length; }
     }
 }

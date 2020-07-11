@@ -12,7 +12,7 @@ namespace TextTableEditor
 {
     public partial class TextTableEditor : Form
     {
-        string filepathEditing;
+        NDSFile fileEditing;
         long _originalFileSize;
         long originalFileSize
         {
@@ -25,21 +25,21 @@ namespace TextTableEditor
         }
         long newFileSize;
 
-        public TextTableEditor(string fileToEdit)
+        public TextTableEditor(NDSFile fileToEdit)
         {
             InitializeComponent();
-            filepathEditing = fileToEdit;
-            this.Text = $"Text Editor [{fileToEdit}]";
+            fileEditing = fileToEdit;
+            this.Text = $"Text Editor [{fileToEdit.FullPath}]";
 
-            originalFileSize = newFileSize = new FileInfo(fileToEdit).Length;
+            originalFileSize = newFileSize = fileToEdit.Size;
             textListBox.Items.Clear();
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            using var fstream = File.OpenRead(filepathEditing);
-            var texts = readTexts(new BinaryReader(fstream));
+            var contents = fileEditing.RetrievePatchedContents();
+            var texts = readTexts(new BinaryReader(new MemoryStream(contents.GetAsArrayCopy())));
             if (texts == null)
             {
                 MessageBox.Show("This file does not seem to be a valid text file.");

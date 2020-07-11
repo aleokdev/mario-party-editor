@@ -53,7 +53,7 @@ namespace NDSUtils
             return output;
         }
 
-        public static bool IsCompressed(string filename)
-            => filename.ToLower().EndsWith("lz.bin");
+        public static bool IsCompressed(NDSFile file)
+            => file.Name.ToLower().EndsWith("lz.bin");
     }
 }

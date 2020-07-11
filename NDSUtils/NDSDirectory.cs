@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace NDSUtils
 {
+    [Serializable]
     public class NDSDirectory
     {
         public NDSFilesystem Filesystem { get; private set; }

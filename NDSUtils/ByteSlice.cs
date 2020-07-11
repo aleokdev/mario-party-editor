@@ -12,6 +12,7 @@ namespace NDSUtils
         }
     }
 
+    [Serializable]
     public struct ByteSlice
     {
         public byte[] Source { get; set; }

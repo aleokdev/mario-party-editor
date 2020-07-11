@@ -34,7 +34,6 @@
             this.filesystemView = new System.Windows.Forms.TreeView();
             this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.loadGameButton = new System.Windows.Forms.ToolStripButton();
             this.loadNDSButton = new System.Windows.Forms.ToolStripButton();
             this.packToROMButton = new System.Windows.Forms.ToolStripButton();
             this.mainContainer = new System.Windows.Forms.SplitContainer();
@@ -85,7 +84,6 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadGameButton,
             this.loadNDSButton,
             this.packToROMButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -93,16 +91,6 @@
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // loadGameButton
-            // 
-            this.loadGameButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.loadGameButton.Image = ((System.Drawing.Image)(resources.GetObject("loadGameButton.Image")));
-            this.loadGameButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.loadGameButton.Name = "loadGameButton";
-            this.loadGameButton.Size = new System.Drawing.Size(95, 22);
-            this.loadGameButton.Text = "Load Filesystem";
-            this.loadGameButton.Click += new System.EventHandler(this.loadGameButton_Click);
             // 
             // loadNDSButton
             // 
@@ -164,6 +152,7 @@
             // 
             this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.openWithButton.Enabled = false;
             this.openWithButton.Location = new System.Drawing.Point(3, 338);
             this.openWithButton.Name = "openWithButton";
             this.openWithButton.Size = new System.Drawing.Size(266, 39);
@@ -220,7 +209,6 @@
 
         private System.Windows.Forms.TreeView filesystemView;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton loadGameButton;
         private System.Windows.Forms.SplitContainer mainContainer;
         private System.Windows.Forms.Button loadTextEditorButton;
         private System.Windows.Forms.LinkLabel selectedFileLinkText;

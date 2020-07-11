@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NDSUtils;
 
 namespace TextTableEditor
 {
@@ -29,7 +30,7 @@ namespace TextTableEditor
                 else
                     return;
             }
-            Application.Run(new TextTableEditor(fileToEdit));
+            Application.Run(new TextTableEditor(new NDSExternalFile(null, 0, fileToEdit, fileToEdit)));
         }
     }
 }

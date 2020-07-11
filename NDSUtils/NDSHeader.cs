@@ -3,7 +3,6 @@ using System.Text;
 
 namespace NDSUtils
 {
-
     public class NDSHeader
     {
         public NDSROM ROM { get; private set; }
