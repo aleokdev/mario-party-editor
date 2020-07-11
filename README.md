@@ -94,6 +94,44 @@ entries : FATEntry[]
 Each file's FNT entry corresponds to its FAT one, so if for example you want to obtain the contents of
 the file `0x02` you'd access `entries[0x02]`, get the lower and upper bounds and map those to the ROM.
 
+### LZ77 COMPRESSION
+Most files in the Mario Party DS ROM and most Nintendo-developed DS games use a custom implementation
+of LZ77 compression to optimize the amount of data used in files.
+
+Normally, the compressed files end their filename with "_LZ.bin", so it's not hard to identify them.
+
+The compressed files in Mario Party DS have the following format:
+```protobuf
+// This first byte, as far as I know, is completely unused, and it's not consistent between different
+// files.
+unknown : byte,
+// The uncompressed file size. Can be used for checking if the decompression went right. And yes, it
+// uses 3 bytes... Odd.
+uncompressed_file_size : uint24,
+struct LZ77Part {
+    decision_byte : byte,
+    // The next content heavily depends on the decision byte, and I'll represent it with some
+    // pseudocode.
+
+    // Go through each bit in decision_byte (High one first, so 1 << 7 to 1 << 0)
+    foreach bit in decision_byte:
+        // If the bit is zero, we copy a byte from the input.
+        // If the bit is one, we reference some data from the input.
+        if bit == 0:
+            output.add(input.read_byte())
+        else
+            pointer_data = (input.read_byte() << 8) | input.read_byte();
+            length = (pointer_data >> 12) + 3;
+            offset = pointer_data & 0xFFF;
+            window_offset = output_index - offset - 1;
+            for pointByte in range(length):
+                output.add(output[windowOffset++])
+}
+
+// Read until there is no more input to read.
+parts : LZ77Part[]
+```
+
 ### THE TEXT FORMAT
 Text/translation files are compressed with LZ77 and have the following format when uncompressed:
 ```protobuf
