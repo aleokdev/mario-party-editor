@@ -64,7 +64,8 @@ namespace MarioPartyEditor
                                           let attributes = type.GetCustomAttributes(typeof(FileFormatCheckerAttribute))
                                           where attributes.Count() > 0 && (bool)type.GetMethods().First().Invoke(null, new object[] { file })
                                           select ((FileFormatCheckerAttribute)attributes.First()).FormatName).FirstOrDefault() ?? "Unknown";
-                    string compressionType = LZ77.IsCompressed(file) ? "LZ77 compressed" : "Uncompressed";
+                    bool isCompressed = LZ77.IsCompressed(file);
+                    string compressionType = isCompressed ? "LZ77 compressed" : "Uncompressed";
                     // TODO: Move to Util (IsPatched, GetPatchPath, etc)
                     string relativeFilePath = PathHelpers.GetRelativePath(EditorData.GamePath, file);
                     var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeFilePath, "xdelta"));
@@ -72,12 +73,18 @@ namespace MarioPartyEditor
 
                     var nodeName = $"{Path.GetFileName(file)} [{compressionType} {fileFormatName}]";
                     TreeNode newNode = parentNode.Nodes.Add(nodeName);
-                    newNode.ImageKey = fileFormatName;
+                    if (isCompressed)
+                        newNode.ImageKey = "LZ77";
+                    else
+                        newNode.ImageKey = fileFormatName;
                     newNode.Tag = file;
-                    if (isPatched)
-                        newNode.BackColor = Color.PaleVioletRed;
-                    if (LZ77.IsCompressed(file))
-                        newNode.ImageKey = "LZ77File";
+                    newNode.BackColor = (isPatched, isCompressed) switch
+                    {
+                        (false, false) => newNode.BackColor,
+                        (true, false) => Color.FromArgb(50, 251, 245, 142),
+                        (false, true) => Color.FromArgb(50, 251, 146, 142),
+                        (true, true) => Color.FromArgb(50, 250, 197, 143)
+                    };
                 }
             }
 
@@ -216,10 +223,10 @@ namespace MarioPartyEditor
             {
                 foreach (var childDir in dir.ChildrenDirectories)
                     ReplaceDirectory(childDir);
-                
+
                 // We use an index for here instead of a foreach because we are going to modify the children collection with the ReplaceWith calls, which
                 // will throw an exception if using a foreach. We aren't modifying the number of files or indices so doing this is OK.
-                for(int childFileIndex = 0; childFileIndex < dir.ChildrenFiles.Count; childFileIndex++)
+                for (int childFileIndex = 0; childFileIndex < dir.ChildrenFiles.Count; childFileIndex++)
                 {
                     var childFile = dir.ChildrenFiles[childFileIndex];
                     string correspondingExternalFile = Path.Combine(EditorData.GamePath, childFile.FullPath.TrimStart('/'));
