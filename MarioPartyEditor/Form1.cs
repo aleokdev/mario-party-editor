@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NDSUtils;
@@ -167,6 +168,18 @@ namespace MarioPartyEditor
                     romFile.Write(newROMData.Source, 0, newROMData.Size);
                 }
                 Console.WriteLine("Done!!");
+            }
+        }
+
+        private void saveProjectButton_Click(object sender, EventArgs e)
+        {
+            var serializer = new BinaryFormatter();
+            var pathToSaveToDialog = new SaveFileDialog() { AddExtension = true, DefaultExt = "ndsproj" };
+            if(pathToSaveToDialog.ShowDialog() == DialogResult.OK)
+            {
+                var pathToSaveTo = pathToSaveToDialog.FileName;
+                using var fileToSaveTo = File.OpenWrite(pathToSaveTo);
+                serializer.Serialize(fileToSaveTo, EditorData.ROMEditing);
             }
         }
     }

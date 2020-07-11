@@ -41,6 +41,7 @@
             this.openWithButton = new System.Windows.Forms.Button();
             this.selectedFileLinkText = new System.Windows.Forms.LinkLabel();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
+            this.saveProjectButton = new System.Windows.Forms.ToolStripButton();
             label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -85,7 +86,8 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadNDSButton,
-            this.packToROMButton});
+            this.packToROMButton,
+            this.saveProjectButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -184,6 +186,16 @@
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
             this.loadTextEditorButton.Click += new System.EventHandler(this.loadTextEditorButton_Click);
             // 
+            // saveProjectButton
+            // 
+            this.saveProjectButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.saveProjectButton.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectButton.Image")));
+            this.saveProjectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveProjectButton.Name = "saveProjectButton";
+            this.saveProjectButton.Size = new System.Drawing.Size(75, 22);
+            this.saveProjectButton.Text = "Save Project";
+            this.saveProjectButton.Click += new System.EventHandler(this.saveProjectButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,6 +229,7 @@
         private System.Windows.Forms.Button uncompressLZ77Button;
         private System.Windows.Forms.ImageList iconList;
         private System.Windows.Forms.ToolStripButton packToROMButton;
+        private System.Windows.Forms.ToolStripButton saveProjectButton;
     }
 }
 
