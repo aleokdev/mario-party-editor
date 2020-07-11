@@ -1,9 +1,30 @@
 ## INTRODUCTION
 I wanted to create a simple editor I could use to change texts in Mario Party DS without messing around
-with 5000 different files, editors and decompression tools.
+with 5000 different files, editors, custom scripts and decompression tools.
 Instead of directly modifying the ROM like other editors, this one generates patch files for every single
 file change, making single-file revertions and source control much, much easier to accomplish. This also
 means you won't need a trillion different NDS files or full patches to distinguish your ROM versions.
+
+## FAQ
+Q: _Does this work on other NDS games apart from Mario Party DS?_
+
+A: Yes, absolutely, although some features, such as the Text Table Editor, are specialized for
+Mario Party.
+
+Q: _Will you add support for other NDS game fileformats?_
+
+A: Probably not, but if I do, it'll be for the game _Hotel Dusk: Room 215_.
+
+Q: _Why use this editor instead of other ones, such as Tinke, NSMBe, NDSTool, CrystalTile,
+kiwi.ds...?_
+
+A: To be honest, I didn't create this project to replace any other editors available because I knew
+I was going to create another one to add to the pile. This one is just specialized for my needs.
+
+Real response: Look at the introduction. _Instead of directly modifying the ROM like other editors,
+this one generates patch files for every single file change, making single-file revertions and source
+control much, much easier to accomplish. This also means you won't need a trillion different NDS
+files or full patches to distinguish your ROM versions._
 
 ## TECHNICAL STUFF
 In this section I'll be documenting every single step I have took in order to create proper NDS files
