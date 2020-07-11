@@ -63,6 +63,7 @@ namespace NDSUtils
                     return;
                 }
             }
+            throw new Exception("Could not find this file in its parent directory. Malformed filesystem?");
         }
     }
 

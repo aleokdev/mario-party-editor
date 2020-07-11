@@ -209,8 +209,8 @@ namespace NDSUtils
                 }
             }
 
-            SaveDir(RootDataDirectory);
             SaveDir(RootOverlayDirectory);
+            SaveDir(RootDataDirectory);
         }
     }
 }

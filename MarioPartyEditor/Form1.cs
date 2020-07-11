@@ -19,7 +19,7 @@ namespace MarioPartyEditor
         public Form1()
         {
             InitializeComponent();
-            EditorData.OnGamePathChange += (_, pathToLoad) => updateFilesystemView(pathToLoad);
+            EditorData.OnGamePathChange += (_, pathToLoad) => updateFilesystemView(Path.Combine(pathToLoad, "data"));
             selectedFileLinkText.LinkClicked += (_a, _b) => filesystemView.SelectedNode = (TreeNode)selectedFileLinkText.Tag;
             filesystemView.AfterSelect += (_, nodeArgs) =>
             {
@@ -142,13 +142,14 @@ namespace MarioPartyEditor
                 string dataFolderPath = Path.Combine(Path.GetDirectoryName(dialog.FileName), DefaultDataFolderName);
                 string ndsFolderPath = Path.Combine(dataFolderPath, rom.Header.GameCode);
 
+                rom.Filesystem.Initialize();
+
                 // Only extract contents of NDS if not extracted before
                 if (!Directory.Exists(Path.Combine(ndsFolderPath, "data")))
                 {
                     Directory.CreateDirectory(ndsFolderPath);
                     File.Copy(dialog.FileName, Path.Combine(ndsFolderPath, "rom.nds"), true);
 
-                    rom.Filesystem.Initialize();
                     Console.Write("Loading done. Extracting ");
                     void extractDirectory(NDSDirectory dir)
                     {
@@ -211,24 +212,25 @@ namespace MarioPartyEditor
             rom.Filesystem.Initialize();
             // Replace the files in the original ROM with external ones pointing to the extracted directories.
             // TODO: Patch the files before using them.
-            foreach (var datafile in Directory.EnumerateFiles(Path.Combine(EditorData.GamePath, "data")))
+            void ReplaceDirectory(NDSDirectory dir)
             {
-                string relativeDatafilePath = PathHelpers.GetRelativePath(EditorData.GamePath, datafile).Replace('\\', '/');
+                foreach (var childDir in dir.ChildrenDirectories)
+                    ReplaceDirectory(childDir);
+                
+                // We use an index for here instead of a foreach because we are going to modify the children collection with the ReplaceWith calls, which
+                // will throw an exception if using a foreach. We aren't modifying the number of files or indices so doing this is OK.
+                for(int childFileIndex = 0; childFileIndex < dir.ChildrenFiles.Count; childFileIndex++)
+                {
+                    var childFile = dir.ChildrenFiles[childFileIndex];
+                    string correspondingExternalFile = Path.Combine(EditorData.GamePath, childFile.FullPath.TrimStart('/'));
+                    if (!File.Exists(correspondingExternalFile))
+                        throw new Exception($"External file {correspondingExternalFile} is missing! Corrupted {DefaultDataFolderName} folder?");
 
-                var fileInROM = rom.Filesystem.RootDataDirectory.GetFile(relativeDatafilePath);
-
-                Console.WriteLine($"File in ROM: {fileInROM.Name}");
-                fileInROM.ReplaceWith(new NDSExternalFile(rom.Filesystem, fileInROM.EntryID, fileInROM.Name, datafile) { Parent = fileInROM.Parent });
+                    childFile.ReplaceWith(new NDSExternalFile(rom.Filesystem, childFile.EntryID, childFile.Name, correspondingExternalFile) { Parent = dir });
+                }
             }
-            foreach (var overlayfile in Directory.EnumerateFiles(Path.Combine(EditorData.GamePath, "overlay")))
-            {
-                string relativeDatafilePath = PathHelpers.GetRelativePath(EditorData.GamePath, overlayfile).Replace('\\', '/');
-
-                var fileInROM = rom.Filesystem.RootOverlayDirectory.GetFile(relativeDatafilePath);
-
-                Console.WriteLine($"File in ROM: {fileInROM.Name}");
-                fileInROM.ReplaceWith(new NDSExternalFile(rom.Filesystem, fileInROM.EntryID, fileInROM.Name, overlayfile) { Parent = fileInROM.Parent });
-            }
+            ReplaceDirectory(rom.Filesystem.RootDataDirectory);
+            ReplaceDirectory(rom.Filesystem.RootOverlayDirectory);
             Console.WriteLine("Replaced everything! Repacking...");
             // Next, we pack everything back to the ROM with the new external data, and we're done.
             rom.Filesystem.PackToROM();
