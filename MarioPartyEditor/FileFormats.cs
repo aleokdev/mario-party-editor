@@ -36,4 +36,13 @@ namespace MarioPartyEditor
             return Path.GetExtension(filepath) == ".txt";
         }
     }
+
+    [FileFormatChecker("Sound Data")]
+    public static class SoundDataFileFormat
+    {
+        public static bool Check(string filepath)
+        {
+            return Path.GetExtension(filepath) == ".sdat";
+        }
+    }
 }

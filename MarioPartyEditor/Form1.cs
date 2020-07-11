@@ -107,7 +107,7 @@ namespace MarioPartyEditor
                 var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
                 Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
                 XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
-                updateFilesystemView(EditorData.GamePath);
+                updateFilesystemView(Path.Combine(EditorData.GamePath, "data"));
             };
         }
 
@@ -197,7 +197,7 @@ namespace MarioPartyEditor
                 }
             }
 
-            updateFilesystemView(EditorData.GamePath);
+            updateFilesystemView(Path.Combine(EditorData.GamePath, "data"));
         }
 
         private void packToROMButton_Click(object sender, EventArgs e)
