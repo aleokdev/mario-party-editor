@@ -154,7 +154,7 @@ namespace MarioPartyEditor
 
         private void packToROMButton_Click(object sender, EventArgs e)
         {
-            var newROMFilepathDialog = new SaveFileDialog() { Title = "Save new ROM to..." };
+            var newROMFilepathDialog = new SaveFileDialog() { Title = "Save new ROM to...", DefaultExt = "nds", AddExtension = true };
             if (newROMFilepathDialog.ShowDialog() == DialogResult.OK)
             {
                 ByteSlice newROMData = new ByteSlice(EditorData.ROMEditing.Data.GetAsArrayCopy());
@@ -175,7 +175,7 @@ namespace MarioPartyEditor
         {
             var serializer = new BinaryFormatter();
             var pathToSaveToDialog = new SaveFileDialog() { AddExtension = true, DefaultExt = "ndsproj" };
-            if(pathToSaveToDialog.ShowDialog() == DialogResult.OK)
+            if (pathToSaveToDialog.ShowDialog() == DialogResult.OK)
             {
                 var pathToSaveTo = pathToSaveToDialog.FileName;
                 using var fileToSaveTo = File.OpenWrite(pathToSaveTo);

@@ -158,13 +158,17 @@ namespace NDSUtils
         /// </summary>
         public void PackTo(ByteSlice target)
         {
-            ByteSlice rawFAT = target.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
+            ByteSlice targetRawFAT = target.Slice((int)ROM.Header.FATAddress, (int)ROM.Header.FATSize);
+            ByteSlice targetHeader = ROM.Header.Data;
+            targetHeader.Source = target.Source;
+            ByteSlice targetRawFNT = RawFNT;
+            targetRawFNT.Source = target.Source;
             const int fatEntrySize = 8;
             ByteSlice[] protectedMemoryRanges = new ByteSlice[]
             {
-                ROM.Header.Data,
-                RawFNT,
-                rawFAT,
+                targetHeader,
+                targetRawFNT,
+                targetRawFAT,
                 target.Slice((int)ROM.Header.ARM9CodeAddress, (int)ROM.Header.ARM9CodeSize),
                 target.Slice((int)ROM.Header.ARM7CodeAddress, (int)ROM.Header.ARM7CodeSize),
                 target.Slice((int)ROM.Header.ARM9OverlayTableAddress, (int)ROM.Header.ARM9OverlayTableSize),
@@ -193,8 +197,8 @@ namespace NDSUtils
                 var fileROMBounds = target.Slice((int)lastFileSaveAddress, filesize);
 
                 // Change FAT entry (lower and upper bound)
-                rawFAT.Slice(file.EntryID * fatEntrySize, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceStart)));
-                rawFAT.Slice(file.EntryID * fatEntrySize + sizeof(uint), sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceEnd)));
+                targetRawFAT.Slice(file.EntryID * fatEntrySize, sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceStart)));
+                targetRawFAT.Slice(file.EntryID * fatEntrySize + sizeof(uint), sizeof(uint)).ReplaceWith(new ByteSlice(BitConverter.GetBytes(fileROMBounds.SliceEnd)));
 
                 lastFileSaveAddress += (uint)filesize;
             }
