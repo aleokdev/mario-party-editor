@@ -3,13 +3,14 @@ using System.Text;
 
 namespace NDSUtils
 {
-    public class NDSHeader
+    public struct NDSHeader
     {
         public NDSROM ROM { get; private set; }
-        public int Size => (int)BitConverter.ToUInt32(ROM.Data.Slice(0x84, sizeof(uint)).GetAsArrayCopy(), startIndex: 0);
-        public ByteSlice Data => ROM.Data.Slice(0, Size);
 
         public NDSHeader(NDSROM rom) => ROM = rom;
+
+        public int Size => (int)BitConverter.ToUInt32(ROM.Data.Slice(0x84, sizeof(uint)).GetAsArrayCopy(), startIndex: 0);
+        public ByteSlice Data => ROM.Data.Slice(0, Size);
 
         public string GameCode
         {

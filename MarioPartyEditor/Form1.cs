@@ -21,15 +21,54 @@ namespace MarioPartyEditor
         {
             InitializeComponent();
             EditorData.OnROMEditingChange += (_, newROM) => updateFilesystemView(newROM.Filesystem.RootDataDirectory);
-            selectedFileLinkText.LinkClicked += (_a, _b) => filesystemView.SelectedNode = (TreeNode)selectedFileLinkText.Tag;
             filesystemView.AfterSelect += (_, nodeArgs) =>
             {
-                // Update selected file label
-                mainContainer.Panel2.Enabled = filesystemView.SelectedNode != null;
-                selectedFileLinkText.Text = nodeArgs.Node.Text;
-                selectedFileLinkText.Tag = nodeArgs.Node;
+                // Update selected file labels
+                bool isSelectingFile = SelectedFile != null;
+                mainContainer.Panel2.Enabled = isSelectingFile;
+                if(isSelectingFile)
+                {
+                    selectedFileFilenameLabel.Text = SelectedFile.Name;
+                    selectedFileFullPathLabel.Text = SelectedFile.FullPath;
+                    selectedFileSizeLabel.Text = $"{SelectedFile.Size} Bytes";
+                    selectedFileEntryIDLabel.Text = $"0x{SelectedFile.EntryID:X4}";
+                }
             };
         }
+
+        #region Project Saving
+        private void ShowSaveProjectDialog()
+        {
+            var pathToSaveToDialog = new SaveFileDialog() { AddExtension = true, DefaultExt = "ndsproj" };
+            if (pathToSaveToDialog.ShowDialog() == DialogResult.OK)
+            {
+                SaveProjectTo(pathToSaveToDialog.FileName);
+            }
+        }
+
+        private void SaveProjectTo(string path)
+        {
+            var serializer = new BinaryFormatter();
+            using var fileToSaveTo = File.OpenWrite(path);
+            serializer.Serialize(fileToSaveTo, EditorData.ROMEditing);
+        }
+
+        private void ShowLoadProjectDialog()
+        {
+            var pathToLoadFromDialog = new OpenFileDialog() { Filter="RaveNDS Project (*.ndsproj)|*.ndsproj", CheckFileExists=true };
+            if (pathToLoadFromDialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadProjectFrom(pathToLoadFromDialog.FileName);
+            }
+        }
+
+        private void LoadProjectFrom(string path)
+        {
+            var serializer = new BinaryFormatter();
+            using var fileToReadFrom = File.OpenRead(path);
+            EditorData.ROMEditing = (NDSROM)serializer.Deserialize(fileToReadFrom);
+        }
+        #endregion
 
         private async void updateFilesystemView(NDSDirectory directoryToView)
         {
@@ -136,22 +175,6 @@ namespace MarioPartyEditor
             }
         }
 
-        private void uncompressLZ77Button_Click(object sender, EventArgs e)
-        {
-            var contents = SelectedFile.RetrievePatchedContents();
-
-            var saveDialog = new SaveFileDialog() { Title = "Uncompress file to..." };
-            if (saveDialog.ShowDialog() == DialogResult.OK)
-            {
-                string pathToDecompressTo = saveDialog.FileName;
-                using (var decompressedFile = File.OpenWrite(pathToDecompressTo))
-                {
-                    var decompressedData = LZ77.Decompress(contents);
-                    decompressedFile.Write(decompressedData, 0, decompressedData.Length);
-                }
-            }
-        }
-
         private void packToROMButton_Click(object sender, EventArgs e)
         {
             var newROMFilepathDialog = new SaveFileDialog() { Title = "Save new ROM to...", DefaultExt = "nds", AddExtension = true };
@@ -171,16 +194,41 @@ namespace MarioPartyEditor
             }
         }
 
-        private void saveProjectButton_Click(object sender, EventArgs e)
+        private void saveProjectButton_Click(object sender, EventArgs e) => ShowSaveProjectDialog();
+
+        private void loadNDSProjectToolStripMenuItem_Click(object sender, EventArgs e) => ShowLoadProjectDialog();
+
+        private void extractFileButton_Click(object sender, EventArgs e)
         {
-            var serializer = new BinaryFormatter();
-            var pathToSaveToDialog = new SaveFileDialog() { AddExtension = true, DefaultExt = "ndsproj" };
-            if (pathToSaveToDialog.ShowDialog() == DialogResult.OK)
+            if (SelectedFile == null) return;
+
+            ByteSlice contents;
+            if(LZ77.IsCompressed(SelectedFile))
             {
-                var pathToSaveTo = pathToSaveToDialog.FileName;
-                using var fileToSaveTo = File.OpenWrite(pathToSaveTo);
-                serializer.Serialize(fileToSaveTo, EditorData.ROMEditing);
+                contents = new ByteSlice(LZ77.Decompress(SelectedFile.RetrievePatchedContents()));
+            } else
+            {
+                contents = SelectedFile.RetrievePatchedContents();
+            }
+
+            var saveFileDialog = new SaveFileDialog() { FileName = SelectedFile.Name };
+
+            if(saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                using var fileToDecompressTo = File.OpenWrite(saveFileDialog.FileName);
+                fileToDecompressTo.Write(contents.Source, 0, contents.Size);
             }
         }
+
+        #region Keybindings
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if(keyData == (Keys.Control | Keys.S))
+            {
+                ShowSaveProjectDialog();
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        #endregion
     }
 }
