@@ -51,6 +51,7 @@
     <Compile Include="NDSROM.cs" />
     <Compile Include="PathHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceControl.cs" />
     <Compile Include="XDelta.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

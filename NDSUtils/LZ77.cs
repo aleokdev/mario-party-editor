@@ -9,7 +9,6 @@ namespace NDSUtils
         {
             // LZ77 in Mario Party DS always starts with an unknown byte
 
-            // Don't ask how this works, I still have to figure it out myself...
             // Adapted from https://github.com/Dirbaio/NSMB-Editor/blob/master/NSMBe4/ROM.cs
             byte[] uncompressedLengthData = new byte[4];
             Array.Copy(inputData.Slice(1, 3).GetAsArrayCopy(), uncompressedLengthData, 3);
@@ -23,7 +22,8 @@ namespace NDSUtils
                 byte decisionByte = input.ReadByte();
                 for (int bit = 7; bit >= 0; bit--)
                 {
-                    if ((decisionByte & (1 << bit)) != 0)
+                    bool referencePastData = (decisionByte & (1 << bit)) != 0;
+                    if (referencePastData)
                     {
                         int pointerData = (input.ReadByte() << 8) | input.ReadByte();
                         int length = (pointerData >> 12) + 3;
@@ -42,7 +42,7 @@ namespace NDSUtils
                     else
                     {
                         output[outputIndex++] = input.ReadByte();
-
+                        
                         if (outputIndex == uncompressedLength)
                         {
                             return output;

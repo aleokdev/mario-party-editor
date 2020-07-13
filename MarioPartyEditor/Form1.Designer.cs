@@ -40,6 +40,8 @@
             System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
             System.Windows.Forms.ToolStripMenuItem loadNDSFileToolStripMenuItem;
             System.Windows.Forms.ToolStripMenuItem loadNDSProjectToolStripMenuItem;
+            System.Windows.Forms.GroupBox sourceControlGroupBox;
+            System.Windows.Forms.GroupBox groupBox1;
             this.filesystemView = new System.Windows.Forms.TreeView();
             this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -54,6 +56,7 @@
             this.selectedFileFullPathLabel = new System.Windows.Forms.Label();
             this.selectedFileSizeLabel = new System.Windows.Forms.Label();
             this.selectedFileEntryIDLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             selectedFileInfoGroupBox = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
@@ -64,6 +67,8 @@
             toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             loadNDSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             loadNDSProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            sourceControlGroupBox = new System.Windows.Forms.GroupBox();
+            groupBox1 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
             this.mainContainer.Panel1.SuspendLayout();
@@ -78,6 +83,8 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // filesystemView
@@ -90,7 +97,7 @@
             this.filesystemView.Location = new System.Drawing.Point(3, 3);
             this.filesystemView.Name = "filesystemView";
             this.filesystemView.SelectedImageIndex = 0;
-            this.filesystemView.Size = new System.Drawing.Size(494, 404);
+            this.filesystemView.Size = new System.Drawing.Size(494, 411);
             this.filesystemView.TabIndex = 1;
             // 
             // iconList
@@ -139,12 +146,9 @@
             // 
             // mainContainer.Panel2
             // 
-            this.mainContainer.Panel2.Controls.Add(selectedFileInfoGroupBox);
-            this.mainContainer.Panel2.Controls.Add(splitContainer1);
-            this.mainContainer.Panel2.Controls.Add(this.openWithButton);
-            this.mainContainer.Panel2.Controls.Add(this.loadTextEditorButton);
+            this.mainContainer.Panel2.Controls.Add(this.tableLayoutPanel1);
             this.mainContainer.Panel2.Enabled = false;
-            this.mainContainer.Size = new System.Drawing.Size(776, 410);
+            this.mainContainer.Size = new System.Drawing.Size(776, 417);
             this.mainContainer.SplitterDistance = 500;
             this.mainContainer.TabIndex = 3;
             // 
@@ -156,7 +160,7 @@
             this.extractFileButton.Location = new System.Drawing.Point(0, 0);
             this.extractFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.extractFileButton.Name = "extractFileButton";
-            this.extractFileButton.Size = new System.Drawing.Size(133, 23);
+            this.extractFileButton.Size = new System.Drawing.Size(125, 23);
             this.extractFileButton.TabIndex = 4;
             this.extractFileButton.Text = "Extract decompressed";
             this.extractFileButton.UseVisualStyleBackColor = true;
@@ -164,12 +168,12 @@
             // 
             // openWithButton
             // 
-            this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.openWithButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.openWithButton.Enabled = false;
-            this.openWithButton.Location = new System.Drawing.Point(3, 339);
+            this.openWithButton.Location = new System.Drawing.Point(4, 64);
             this.openWithButton.Name = "openWithButton";
-            this.openWithButton.Size = new System.Drawing.Size(266, 39);
+            this.openWithButton.Size = new System.Drawing.Size(250, 39);
             this.openWithButton.TabIndex = 3;
             this.openWithButton.Text = "Open With...";
             this.openWithButton.UseVisualStyleBackColor = true;
@@ -177,11 +181,11 @@
             // 
             // loadTextEditorButton
             // 
-            this.loadTextEditorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.loadTextEditorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadTextEditorButton.Location = new System.Drawing.Point(3, 294);
+            this.loadTextEditorButton.Location = new System.Drawing.Point(4, 19);
             this.loadTextEditorButton.Name = "loadTextEditorButton";
-            this.loadTextEditorButton.Size = new System.Drawing.Size(266, 39);
+            this.loadTextEditorButton.Size = new System.Drawing.Size(250, 39);
             this.loadTextEditorButton.TabIndex = 0;
             this.loadTextEditorButton.Text = "Load with Text Editor";
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
@@ -205,17 +209,17 @@
             this.replaceFileButton.Location = new System.Drawing.Point(0, 0);
             this.replaceFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.replaceFileButton.Name = "replaceFileButton";
-            this.replaceFileButton.Size = new System.Drawing.Size(129, 23);
+            this.replaceFileButton.Size = new System.Drawing.Size(121, 23);
             this.replaceFileButton.TabIndex = 5;
             this.replaceFileButton.Text = "Replace with...";
             this.replaceFileButton.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
             // 
-            splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             splitContainer1.IsSplitterFixed = true;
-            splitContainer1.Location = new System.Drawing.Point(3, 384);
+            splitContainer1.Location = new System.Drawing.Point(4, 109);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -225,8 +229,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.replaceFileButton);
-            splitContainer1.Size = new System.Drawing.Size(266, 23);
-            splitContainer1.SplitterDistance = 133;
+            splitContainer1.Size = new System.Drawing.Size(250, 23);
+            splitContainer1.SplitterDistance = 125;
             splitContainer1.TabIndex = 6;
             // 
             // selectedFileInfoGroupBox
@@ -236,7 +240,7 @@
             selectedFileInfoGroupBox.Controls.Add(splitContainer2);
             selectedFileInfoGroupBox.Location = new System.Drawing.Point(3, 3);
             selectedFileInfoGroupBox.Name = "selectedFileInfoGroupBox";
-            selectedFileInfoGroupBox.Size = new System.Drawing.Size(266, 114);
+            selectedFileInfoGroupBox.Size = new System.Drawing.Size(260, 113);
             selectedFileInfoGroupBox.TabIndex = 7;
             selectedFileInfoGroupBox.TabStop = false;
             selectedFileInfoGroupBox.Text = "Selected File Information";
@@ -245,7 +249,7 @@
             // 
             label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(5, 3);
+            label2.Location = new System.Drawing.Point(4, 3);
             label2.Margin = new System.Windows.Forms.Padding(3);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(49, 13);
@@ -274,15 +278,15 @@
             splitContainer2.Panel2.Controls.Add(this.selectedFileSizeLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFullPathLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFilenameLabel);
-            splitContainer2.Size = new System.Drawing.Size(256, 89);
-            splitContainer2.SplitterDistance = 57;
+            splitContainer2.Size = new System.Drawing.Size(250, 88);
+            splitContainer2.SplitterDistance = 56;
             splitContainer2.TabIndex = 1;
             // 
             // label3
             // 
             label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(6, 22);
+            label3.Location = new System.Drawing.Point(5, 22);
             label3.Margin = new System.Windows.Forms.Padding(3);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(48, 13);
@@ -293,7 +297,7 @@
             // 
             label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(27, 41);
+            label4.Location = new System.Drawing.Point(26, 41);
             label4.Margin = new System.Windows.Forms.Padding(3);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(27, 13);
@@ -334,7 +338,7 @@
             // 
             label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(9, 60);
+            label1.Location = new System.Drawing.Point(8, 60);
             label1.Margin = new System.Windows.Forms.Padding(3);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(45, 13);
@@ -378,11 +382,57 @@
             loadNDSProjectToolStripMenuItem.Text = "Load NDS Project...";
             loadNDSProjectToolStripMenuItem.Click += new System.EventHandler(this.loadNDSProjectToolStripMenuItem_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(groupBox1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(sourceControlGroupBox, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(selectedFileInfoGroupBox, 0, 0);
+            this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(266, 411);
+            this.tableLayoutPanel1.TabIndex = 9;
+            // 
+            // sourceControlGroupBox
+            // 
+            sourceControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            sourceControlGroupBox.Location = new System.Drawing.Point(3, 122);
+            sourceControlGroupBox.Name = "sourceControlGroupBox";
+            sourceControlGroupBox.Size = new System.Drawing.Size(260, 133);
+            sourceControlGroupBox.TabIndex = 10;
+            sourceControlGroupBox.TabStop = false;
+            sourceControlGroupBox.Text = "Source Control";
+            // 
+            // groupBox1
+            // 
+            groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            groupBox1.Controls.Add(this.loadTextEditorButton);
+            groupBox1.Controls.Add(splitContainer1);
+            groupBox1.Controls.Add(this.openWithButton);
+            groupBox1.Location = new System.Drawing.Point(3, 261);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new System.Drawing.Size(260, 140);
+            groupBox1.TabIndex = 10;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Tools And Utils";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 457);
             this.Controls.Add(this.mainContainer);
             this.Controls.Add(this.toolStrip1);
             this.KeyPreview = true;
@@ -405,6 +455,8 @@
             splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(splitContainer2)).EndInit();
             splitContainer2.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -426,6 +478,7 @@
         private System.Windows.Forms.Label selectedFileFullPathLabel;
         private System.Windows.Forms.Label selectedFileFilenameLabel;
         private System.Windows.Forms.Label selectedFileEntryIDLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
 
