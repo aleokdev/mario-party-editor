@@ -30,7 +30,7 @@ namespace MarioPartyEditor
                 {
                     selectedFileFilenameLabel.Text = SelectedFile.Name;
                     selectedFileFullPathLabel.Text = SelectedFile.FullPath;
-                    selectedFileSizeLabel.Text = $"{SelectedFile.Size} Bytes";
+                    selectedFileSizeLabel.Text = $"{SelectedFile.PatchedSize} Bytes";
                     selectedFileEntryIDLabel.Text = $"0x{SelectedFile.EntryID:X4}";
                 }
             };
@@ -113,6 +113,7 @@ namespace MarioPartyEditor
             var newNodeTree = await Task.Run(() =>
             {
                 var newNode = new TreeNode("root");
+                newNode.ImageKey = "Root";
                 newNode.Expand();
                 recurseFiles(newNode, directoryToView);
                 return newNode;
@@ -230,5 +231,32 @@ namespace MarioPartyEditor
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
+
+        private void replaceFileButton_Click(object sender, EventArgs e)
+        {
+            if (SelectedFile == null) return;
+
+            OpenFileDialog dialog = new OpenFileDialog() { CheckFileExists = true };
+
+            if(dialog.ShowDialog() == DialogResult.OK)
+            {
+                var file = File.OpenRead(dialog.FileName);
+                var rawContents = new byte[file.Length];
+                file.Read(rawContents, 0, (int)file.Length);
+                ByteSlice contents;
+
+                if(LZ77.IsCompressed(SelectedFile))
+                {
+                    Console.WriteLine("Compressing...");
+                    contents = new ByteSlice(LZ77.Compress(new ByteSlice(rawContents)));
+                } else
+                {
+                    contents = new ByteSlice(rawContents);
+                }
+
+                var patch = XDelta.CreatePatch(contents, SelectedFile.RetrievePatchedContents());
+                SelectedFile.Patches.Add(patch);
+            }
+        }
     }
 }

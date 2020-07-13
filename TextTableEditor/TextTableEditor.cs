@@ -31,7 +31,7 @@ namespace TextTableEditor
             fileEditing = fileToEdit;
             this.Text = $"Text Editor [{fileToEdit.FullPath}]";
 
-            originalFileSize = newFileSize = fileToEdit.Size;
+            originalFileSize = newFileSize = fileToEdit.OriginalSize;
             textListBox.Items.Clear();
         }
 

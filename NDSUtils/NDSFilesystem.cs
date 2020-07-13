@@ -179,7 +179,7 @@ namespace NDSUtils
 
             void SaveFile(NDSFile file)
             {
-                int filesize = file.Size;
+                int filesize = file.PatchedSize;
                 ByteSlice GetFileSlice() => target.Slice((int)lastFileSaveAddress, filesize);
                 IEnumerable<ByteSlice> calculateRangesIntersecting() =>
                     from range in protectedMemoryRanges where range.Intersects(GetFileSlice()) select range;

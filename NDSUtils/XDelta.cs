@@ -19,11 +19,22 @@ namespace NDSUtils
                 UseShellExecute = false,
                 FileName = "xdelta3.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = $"-e -s \"{sourcePath}\" \"{targetPath}\" \"{patchPath}\""
+                Arguments = $"-f -e -s \"{sourcePath}\" \"{targetPath}\" \"{patchPath}\""
             };
 
             using Process exeProcess = Process.Start(startInfo);
             exeProcess.WaitForExit();
+            startInfo = new ProcessStartInfo
+            {
+                CreateNoWindow = false,
+                UseShellExecute = false,
+                FileName = "xdelta3.exe",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                Arguments = $"printdelta \"{patchPath}\""
+            };
+
+            using Process exe2Process = Process.Start(startInfo);
+            exe2Process.WaitForExit();
         }
 
         public static ByteSlice CreatePatch(ByteSlice target, ByteSlice source)
@@ -32,12 +43,14 @@ namespace NDSUtils
             // will be a thousand times faster, specially on PCs with old HDDs.
 
             var targetFilename = Path.GetTempFileName();
-            using var targetFile = File.OpenWrite(targetFilename);
-            targetFile.Write(target.GetAsArrayCopy(), 0, target.Size);
             var sourceFilename = Path.GetTempFileName();
-            using var sourceFile = File.OpenWrite(sourceFilename);
-            sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
             var patchFilename = Path.GetTempFileName();
+            {
+                using var targetFile = File.OpenWrite(targetFilename);
+                targetFile.Write(target.GetAsArrayCopy(), 0, target.Size);
+                using var sourceFile = File.OpenWrite(sourceFilename);
+                sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
+            }
 
             CreatePatch(targetFilename, sourceFilename, patchFilename);
 
@@ -58,7 +71,7 @@ namespace NDSUtils
                 UseShellExecute = false,
                 FileName = "xdelta3.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = $"-d -s \"{sourcePath}\" \"{patchPath}\" \"{newFilePath}\""
+                Arguments = $"-f -d -s \"{sourcePath}\" \"{patchPath}\" \"{newFilePath}\""
             };
 
             using Process exeProcess = Process.Start(startInfo);
@@ -71,16 +84,19 @@ namespace NDSUtils
             // will be a thousand times faster, specially on PCs with old HDDs.
 
             var patchFilename = Path.GetTempFileName();
-            using var patchFile = File.OpenWrite(patchFilename);
-            patchFile.Write(patch.GetAsArrayCopy(), 0, patch.Size);
             var sourceFilename = Path.GetTempFileName();
-            using var sourceFile = File.OpenWrite(sourceFilename);
-            sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
             var resultFilename = Path.GetTempFileName();
+            {
+                using var patchFile = File.OpenWrite(patchFilename);
+                patchFile.Write(patch.GetAsArrayCopy(), 0, patch.Size);
+                using var sourceFile = File.OpenWrite(sourceFilename);
+                sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
+            }
+            
 
             ApplyPatch(patchFilename, sourceFilename, resultFilename);
 
-            using var resultFile = File.OpenRead(patchFilename);
+            using var resultFile = File.OpenRead(resultFilename);
             byte[] resultData = new byte[resultFile.Length];
             resultFile.Read(resultData, 0, (int)resultFile.Length);
             return new ByteSlice(resultData);

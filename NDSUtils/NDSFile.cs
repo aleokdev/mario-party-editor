@@ -23,7 +23,7 @@ namespace NDSUtils
 
         public string Name { get; private set; }
 
-        public List<ByteSlice> Patches { get; set; } = new List<ByteSlice>();
+        public List<ByteSlice> Patches { get; private set; } = new List<ByteSlice>();
 
         /// <summary>
         /// Retrieves the File Address Table from the ROM.
@@ -66,7 +66,7 @@ namespace NDSUtils
             return patchedData;
         }
 
-        public virtual int Size
+        public virtual int OriginalSize
         {
             get
             {
@@ -74,6 +74,15 @@ namespace NDSUtils
                 uint lowerBound = BitConverter.ToUInt32(fatEntry.Slice(0, sizeof(uint)).GetAsArrayCopy(), 0);
                 uint upperBound = BitConverter.ToUInt32(fatEntry.Slice(sizeof(uint), sizeof(uint)).GetAsArrayCopy(), 0);
                 return (int)(upperBound - lowerBound);
+            }
+        }
+
+        public int PatchedSize
+        {
+            get
+            {
+                // TODO: OPTIMIZE THIS. THIS IS EXTREMELY SLOW. FINISH THE VCS. PLEASE.
+                return RetrievePatchedContents().Size;
             }
         }
 
@@ -113,6 +122,6 @@ namespace NDSUtils
             }
         }
 
-        public override int Size { get => (int)new FileInfo(ExternalFilepath).Length; }
+        public override int OriginalSize { get => (int)new FileInfo(ExternalFilepath).Length; }
     }
 }
