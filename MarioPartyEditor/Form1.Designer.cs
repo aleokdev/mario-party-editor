@@ -41,13 +41,20 @@
             System.Windows.Forms.ToolStripMenuItem loadNDSFileToolStripMenuItem;
             System.Windows.Forms.ToolStripMenuItem loadNDSProjectToolStripMenuItem;
             System.Windows.Forms.GroupBox sourceControlGroupBox;
+            System.Windows.Forms.SplitContainer splitContainer3;
             System.Windows.Forms.GroupBox groupBox1;
             this.extractFileButton = new System.Windows.Forms.Button();
             this.replaceFileButton = new System.Windows.Forms.Button();
+            this.selectedFileViewHistoryButton = new System.Windows.Forms.Button();
             this.selectedFileEntryIDLabel = new System.Windows.Forms.Label();
             this.selectedFileSizeLabel = new System.Windows.Forms.Label();
             this.selectedFileFullPathLabel = new System.Windows.Forms.Label();
             this.selectedFileFilenameLabel = new System.Windows.Forms.Label();
+            this.vcsChangeListBox = new System.Windows.Forms.ListBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.vcsCommitButton = new System.Windows.Forms.Button();
+            this.vcsUndoButton = new System.Windows.Forms.Button();
+            this.vcsHistoryButton = new System.Windows.Forms.Button();
             this.loadTextEditorButton = new System.Windows.Forms.Button();
             this.openWithButton = new System.Windows.Forms.Button();
             this.filesystemView = new System.Windows.Forms.TreeView();
@@ -68,6 +75,7 @@
             loadNDSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             loadNDSProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             sourceControlGroupBox = new System.Windows.Forms.GroupBox();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -78,6 +86,12 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            sourceControlGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(splitContainer3)).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             groupBox1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -103,8 +117,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.replaceFileButton);
-            splitContainer1.Size = new System.Drawing.Size(293, 28);
-            splitContainer1.SplitterDistance = 146;
+            splitContainer1.Size = new System.Drawing.Size(313, 28);
+            splitContainer1.SplitterDistance = 154;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 6;
             // 
@@ -116,7 +130,7 @@
             this.extractFileButton.Location = new System.Drawing.Point(0, 0);
             this.extractFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.extractFileButton.Name = "extractFileButton";
-            this.extractFileButton.Size = new System.Drawing.Size(146, 28);
+            this.extractFileButton.Size = new System.Drawing.Size(154, 28);
             this.extractFileButton.TabIndex = 4;
             this.extractFileButton.Text = "Extract decompressed";
             this.extractFileButton.UseVisualStyleBackColor = true;
@@ -130,7 +144,7 @@
             this.replaceFileButton.Location = new System.Drawing.Point(0, 0);
             this.replaceFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.replaceFileButton.Name = "replaceFileButton";
-            this.replaceFileButton.Size = new System.Drawing.Size(142, 28);
+            this.replaceFileButton.Size = new System.Drawing.Size(151, 28);
             this.replaceFileButton.TabIndex = 5;
             this.replaceFileButton.Text = "Replace with...";
             this.replaceFileButton.UseVisualStyleBackColor = true;
@@ -138,25 +152,22 @@
             // 
             // selectedFileInfoGroupBox
             // 
-            selectedFileInfoGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             selectedFileInfoGroupBox.Controls.Add(splitContainer2);
+            selectedFileInfoGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             selectedFileInfoGroupBox.Location = new System.Drawing.Point(3, 4);
             selectedFileInfoGroupBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             selectedFileInfoGroupBox.Name = "selectedFileInfoGroupBox";
             selectedFileInfoGroupBox.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            selectedFileInfoGroupBox.Size = new System.Drawing.Size(304, 140);
+            selectedFileInfoGroupBox.Size = new System.Drawing.Size(324, 140);
             selectedFileInfoGroupBox.TabIndex = 7;
             selectedFileInfoGroupBox.TabStop = false;
             selectedFileInfoGroupBox.Text = "Selected File Information";
             // 
             // splitContainer2
             // 
-            splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer2.IsSplitterFixed = true;
-            splitContainer2.Location = new System.Drawing.Point(5, 23);
+            splitContainer2.Location = new System.Drawing.Point(3, 19);
             splitContainer2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             splitContainer2.Name = "splitContainer2";
             // 
@@ -169,12 +180,13 @@
             // 
             // splitContainer2.Panel2
             // 
+            splitContainer2.Panel2.Controls.Add(this.selectedFileViewHistoryButton);
             splitContainer2.Panel2.Controls.Add(this.selectedFileEntryIDLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileSizeLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFullPathLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFilenameLabel);
-            splitContainer2.Size = new System.Drawing.Size(293, 108);
-            splitContainer2.SplitterDistance = 65;
+            splitContainer2.Size = new System.Drawing.Size(318, 117);
+            splitContainer2.SplitterDistance = 68;
             splitContainer2.SplitterWidth = 5;
             splitContainer2.TabIndex = 1;
             // 
@@ -182,7 +194,7 @@
             // 
             label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(9, 74);
+            label1.Location = new System.Drawing.Point(12, 74);
             label1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(49, 16);
@@ -194,7 +206,7 @@
             // 
             label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(30, 51);
+            label4.Location = new System.Drawing.Point(33, 51);
             label4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(28, 16);
@@ -205,7 +217,7 @@
             // 
             label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(6, 28);
+            label3.Location = new System.Drawing.Point(9, 28);
             label3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(54, 16);
@@ -216,12 +228,23 @@
             // 
             label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(5, 4);
+            label2.Location = new System.Drawing.Point(8, 4);
             label2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(55, 16);
             label2.TabIndex = 0;
             label2.Text = "Filename";
+            // 
+            // selectedFileViewHistoryButton
+            // 
+            this.selectedFileViewHistoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectedFileViewHistoryButton.Location = new System.Drawing.Point(4, 91);
+            this.selectedFileViewHistoryButton.Name = "selectedFileViewHistoryButton";
+            this.selectedFileViewHistoryButton.Size = new System.Drawing.Size(235, 23);
+            this.selectedFileViewHistoryButton.TabIndex = 4;
+            this.selectedFileViewHistoryButton.Text = "View History";
+            this.selectedFileViewHistoryButton.UseVisualStyleBackColor = true;
             // 
             // selectedFileEntryIDLabel
             // 
@@ -291,30 +314,104 @@
             // 
             // sourceControlGroupBox
             // 
-            sourceControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            sourceControlGroupBox.Controls.Add(splitContainer3);
+            sourceControlGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             sourceControlGroupBox.Location = new System.Drawing.Point(3, 152);
             sourceControlGroupBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             sourceControlGroupBox.Name = "sourceControlGroupBox";
             sourceControlGroupBox.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            sourceControlGroupBox.Size = new System.Drawing.Size(304, 164);
+            sourceControlGroupBox.Size = new System.Drawing.Size(324, 164);
             sourceControlGroupBox.TabIndex = 10;
             sourceControlGroupBox.TabStop = false;
             sourceControlGroupBox.Text = "Source Control";
             // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.Location = new System.Drawing.Point(3, 19);
+            splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(this.vcsChangeListBox);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(this.tableLayoutPanel2);
+            splitContainer3.Size = new System.Drawing.Size(318, 141);
+            splitContainer3.SplitterDistance = 104;
+            splitContainer3.TabIndex = 0;
+            // 
+            // vcsChangeListBox
+            // 
+            this.vcsChangeListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vcsChangeListBox.FormattingEnabled = true;
+            this.vcsChangeListBox.ItemHeight = 16;
+            this.vcsChangeListBox.Location = new System.Drawing.Point(0, 0);
+            this.vcsChangeListBox.Name = "vcsChangeListBox";
+            this.vcsChangeListBox.Size = new System.Drawing.Size(104, 141);
+            this.vcsChangeListBox.TabIndex = 0;
+            this.vcsChangeListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.vcsChangeListBox_MouseDoubleClick);
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.vcsCommitButton, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.vcsUndoButton, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.vcsHistoryButton, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(210, 141);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // vcsCommitButton
+            // 
+            this.vcsCommitButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vcsCommitButton.Location = new System.Drawing.Point(3, 97);
+            this.vcsCommitButton.Name = "vcsCommitButton";
+            this.vcsCommitButton.Size = new System.Drawing.Size(204, 41);
+            this.vcsCommitButton.TabIndex = 0;
+            this.vcsCommitButton.Text = "Commit";
+            this.vcsCommitButton.UseVisualStyleBackColor = true;
+            this.vcsCommitButton.Click += new System.EventHandler(this.vcsCommitButton_Click);
+            // 
+            // vcsUndoButton
+            // 
+            this.vcsUndoButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vcsUndoButton.Location = new System.Drawing.Point(3, 50);
+            this.vcsUndoButton.Name = "vcsUndoButton";
+            this.vcsUndoButton.Size = new System.Drawing.Size(204, 41);
+            this.vcsUndoButton.TabIndex = 1;
+            this.vcsUndoButton.Text = "Undo All";
+            this.vcsUndoButton.UseVisualStyleBackColor = true;
+            // 
+            // vcsHistoryButton
+            // 
+            this.vcsHistoryButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vcsHistoryButton.Location = new System.Drawing.Point(3, 3);
+            this.vcsHistoryButton.Name = "vcsHistoryButton";
+            this.vcsHistoryButton.Size = new System.Drawing.Size(204, 41);
+            this.vcsHistoryButton.TabIndex = 2;
+            this.vcsHistoryButton.Text = "History";
+            this.vcsHistoryButton.UseVisualStyleBackColor = true;
+            // 
             // groupBox1
             // 
-            groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             groupBox1.Controls.Add(this.loadTextEditorButton);
             groupBox1.Controls.Add(splitContainer1);
             groupBox1.Controls.Add(this.openWithButton);
+            groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(3, 324);
             groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            groupBox1.Size = new System.Drawing.Size(304, 172);
+            groupBox1.Size = new System.Drawing.Size(324, 259);
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             groupBox1.Text = "Tools And Utils";
@@ -326,7 +423,7 @@
             this.loadTextEditorButton.Location = new System.Drawing.Point(5, 23);
             this.loadTextEditorButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.loadTextEditorButton.Name = "loadTextEditorButton";
-            this.loadTextEditorButton.Size = new System.Drawing.Size(293, 48);
+            this.loadTextEditorButton.Size = new System.Drawing.Size(313, 48);
             this.loadTextEditorButton.TabIndex = 0;
             this.loadTextEditorButton.Text = "Load with Text Table Editor";
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
@@ -340,7 +437,7 @@
             this.openWithButton.Location = new System.Drawing.Point(5, 79);
             this.openWithButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.openWithButton.Name = "openWithButton";
-            this.openWithButton.Size = new System.Drawing.Size(293, 48);
+            this.openWithButton.Size = new System.Drawing.Size(313, 48);
             this.openWithButton.TabIndex = 3;
             this.openWithButton.Text = "Open With...";
             this.openWithButton.UseVisualStyleBackColor = true;
@@ -357,7 +454,7 @@
             this.filesystemView.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.filesystemView.Name = "filesystemView";
             this.filesystemView.SelectedImageIndex = 0;
-            this.filesystemView.Size = new System.Drawing.Size(576, 504);
+            this.filesystemView.Size = new System.Drawing.Size(615, 585);
             this.filesystemView.TabIndex = 1;
             // 
             // iconList
@@ -380,13 +477,14 @@
             this.packToROMButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(933, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(995, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // saveProjectButton
             // 
             this.saveProjectButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.saveProjectButton.Enabled = false;
             this.saveProjectButton.Image = ((System.Drawing.Image)(resources.GetObject("saveProjectButton.Image")));
             this.saveProjectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveProjectButton.Name = "saveProjectButton";
@@ -397,6 +495,7 @@
             // packToROMButton
             // 
             this.packToROMButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.packToROMButton.Enabled = false;
             this.packToROMButton.Image = ((System.Drawing.Image)(resources.GetObject("packToROMButton.Image")));
             this.packToROMButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.packToROMButton.Name = "packToROMButton";
@@ -421,8 +520,8 @@
             // 
             this.mainContainer.Panel2.Controls.Add(this.tableLayoutPanel1);
             this.mainContainer.Panel2.Enabled = false;
-            this.mainContainer.Size = new System.Drawing.Size(905, 513);
-            this.mainContainer.SplitterDistance = 583;
+            this.mainContainer.Size = new System.Drawing.Size(967, 594);
+            this.mainContainer.SplitterDistance = 622;
             this.mainContainer.SplitterWidth = 5;
             this.mainContainer.TabIndex = 3;
             // 
@@ -444,14 +543,14 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(310, 506);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(330, 587);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 563);
+            this.ClientSize = new System.Drawing.Size(995, 644);
             this.Controls.Add(this.mainContainer);
             this.Controls.Add(this.toolStrip1);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -470,6 +569,12 @@
             splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(splitContainer2)).EndInit();
             splitContainer2.ResumeLayout(false);
+            sourceControlGroupBox.ResumeLayout(false);
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(splitContainer3)).EndInit();
+            splitContainer3.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -500,6 +605,12 @@
         private System.Windows.Forms.Label selectedFileFilenameLabel;
         private System.Windows.Forms.Label selectedFileEntryIDLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ListBox vcsChangeListBox;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Button vcsCommitButton;
+        private System.Windows.Forms.Button vcsUndoButton;
+        private System.Windows.Forms.Button vcsHistoryButton;
+        private System.Windows.Forms.Button selectedFileViewHistoryButton;
     }
 }
 

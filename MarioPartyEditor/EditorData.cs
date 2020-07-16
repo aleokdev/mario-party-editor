@@ -1,11 +1,15 @@
 ﻿using NDSUtils;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace MarioPartyEditor
 {
-    public static class EditorData
+    [Serializable]
+    public class EditorProject
     {
-        public static NDSROM _romEditing;
-        public static NDSROM ROMEditing
+        public NDSROM _romEditing;
+        public NDSROM ROMEditing
         {
             get => _romEditing;
             set
@@ -14,8 +18,15 @@ namespace MarioPartyEditor
                 _romEditing = value;
             }
         }
-
         public delegate void OnROMEditingChangeHandler(NDSROM romBefore, NDSROM romAfter);
-        public static event OnROMEditingChangeHandler OnROMEditingChange;
+        [field: NonSerialized]
+        public event OnROMEditingChangeHandler OnROMEditingChange;
+
+        private VCSCommit _headCommit = new VCSCommit();
+        public VCSCommit HeadCommit { get => _headCommit; set { _headCommit = value; OnHeadCommitChange?.Invoke(null, null); } }
+        [field: NonSerialized]
+        public event EventHandler OnHeadCommitChange;
+
+        public Stack<VCSCommit> PastCommits { get; } = new Stack<VCSCommit>();
     }
 }

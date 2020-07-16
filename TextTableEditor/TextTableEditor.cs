@@ -38,8 +38,8 @@ namespace TextTableEditor
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            var contents = fileEditing.RetrievePatchedContents();
-            var texts = readTexts(new BinaryReader(new MemoryStream(contents.GetAsArrayCopy())));
+            var contents = fileEditing.RetrieveLatestVersionData();
+            var texts = readTexts(new BinaryReader(new MemoryStream(contents)));
             if (texts == null)
             {
                 MessageBox.Show("This file does not seem to be a valid text file.");

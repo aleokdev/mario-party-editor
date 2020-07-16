@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -14,23 +15,41 @@ namespace MarioPartyEditor
 {
     public partial class Form1 : Form
     {
+        private EditorProject _projectEditing;
+        public EditorProject ProjectEditing
+        {
+            get => _projectEditing;
+            set
+            {
+                _projectEditing = value;
+                saveProjectButton.Enabled = value != null;
+                packToROMButton.Enabled = value != null;
+                if (value != null)
+                {
+                    value.OnROMEditingChange += (_, newROM) => updateFilesystemView(newROM.Filesystem.RootDataDirectory);
+                    value.OnHeadCommitChange += (_, __) => updateVCSControls();
+                    value.HeadCommit.Changes.CollectionChanged += (_, __) => updateVCSControls();
+                }
+            }
+        }
+
         public string DefaultDataFolderName => "MarioPartyEditor";
         public NDSFile SelectedFile { get => (NDSFile)filesystemView.SelectedNode.Tag; }
 
         public Form1()
         {
             InitializeComponent();
-            EditorData.OnROMEditingChange += (_, newROM) => updateFilesystemView(newROM.Filesystem.RootDataDirectory);
+
             filesystemView.AfterSelect += (_, nodeArgs) =>
             {
                 // Update selected file labels
                 bool isSelectingFile = SelectedFile != null;
                 mainContainer.Panel2.Enabled = isSelectingFile;
-                if(isSelectingFile)
+                if (isSelectingFile)
                 {
                     selectedFileFilenameLabel.Text = SelectedFile.Name;
                     selectedFileFullPathLabel.Text = SelectedFile.FullPath;
-                    selectedFileSizeLabel.Text = $"{SelectedFile.PatchedSize} Bytes";
+                    selectedFileSizeLabel.Text = $"{SelectedFile.LatestVersionSize} Bytes";
                     selectedFileEntryIDLabel.Text = $"0x{SelectedFile.EntryID:X4}";
                 }
             };
@@ -50,12 +69,12 @@ namespace MarioPartyEditor
         {
             var serializer = new BinaryFormatter();
             using var fileToSaveTo = File.OpenWrite(path);
-            serializer.Serialize(fileToSaveTo, EditorData.ROMEditing);
+            serializer.Serialize(fileToSaveTo, _projectEditing);
         }
 
         private void ShowLoadProjectDialog()
         {
-            var pathToLoadFromDialog = new OpenFileDialog() { Filter="RaveNDS Project (*.ndsproj)|*.ndsproj", CheckFileExists=true };
+            var pathToLoadFromDialog = new OpenFileDialog() { Filter = "RaveNDS Project (*.ndsproj)|*.ndsproj", CheckFileExists = true };
             if (pathToLoadFromDialog.ShowDialog() == DialogResult.OK)
             {
                 LoadProjectFrom(pathToLoadFromDialog.FileName);
@@ -66,7 +85,9 @@ namespace MarioPartyEditor
         {
             var serializer = new BinaryFormatter();
             using var fileToReadFrom = File.OpenRead(path);
-            EditorData.ROMEditing = (NDSROM)serializer.Deserialize(fileToReadFrom);
+            ProjectEditing = (EditorProject)serializer.Deserialize(fileToReadFrom);
+            updateFilesystemView(ProjectEditing.ROMEditing.Filesystem.RootDataDirectory);
+            updateVCSControls();
         }
         #endregion
 
@@ -83,7 +104,7 @@ namespace MarioPartyEditor
 
                 foreach (var childFile in dir.ChildrenFiles)
                 {
-                    var childData = childFile.RetrieveOriginalContents();
+                    var childData = childFile.RetrieveLatestVersionData();
                     // TODO: Cache file formats
                     var fileFormatName = (from type in Assembly.GetExecutingAssembly().GetTypes()
                                           let attributes = type.GetCustomAttributes(typeof(FileFormatCheckerAttribute))
@@ -91,7 +112,6 @@ namespace MarioPartyEditor
                                           select ((FileFormatCheckerAttribute)attributes.First()).FormatName).FirstOrDefault() ?? "Unknown";
                     bool isCompressed = LZ77.IsCompressed(childFile);
                     string compressionType = isCompressed ? "LZ77 compressed" : "Uncompressed";
-                    bool isPatched = childFile.Patches.Any();
 
                     var nodeName = $"{childFile.Name} [{compressionType} {fileFormatName}]";
                     TreeNode newNode = parentNode.Nodes.Add(nodeName);
@@ -100,13 +120,7 @@ namespace MarioPartyEditor
                     else
                         newNode.ImageKey = fileFormatName;
                     newNode.Tag = childFile;
-                    newNode.BackColor = (isPatched, isCompressed) switch
-                    {
-                        (false, false) => newNode.BackColor,
-                        (true, false) => Color.FromArgb(50, 251, 245, 142),
-                        (false, true) => Color.FromArgb(50, 251, 146, 142),
-                        (true, true) => Color.FromArgb(50, 250, 197, 143)
-                    };
+                    newNode.BackColor = isCompressed ? Color.FromArgb(50, 251, 146, 142) : newNode.BackColor;
                 }
             }
 
@@ -123,6 +137,13 @@ namespace MarioPartyEditor
             filesystemView.Nodes.Add(newNodeTree);
         }
 
+        private void updateVCSControls()
+        {
+            vcsChangeListBox.Items.Clear();
+            foreach (var item in ProjectEditing.HeadCommit.Changes)
+                vcsChangeListBox.Items.Add(item);
+        }
+
         private void loadTextEditorButton_Click(object sender, EventArgs e)
         {
             var editor = new TextTableEditor.TextTableEditor(SelectedFile);
@@ -134,11 +155,11 @@ namespace MarioPartyEditor
                 var tempNewFilePath = Path.GetTempFileName();
                 using (var tempNewFile = File.OpenWrite(tempNewFilePath))
                     tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
-                string relativeEditingPath = PathHelpers.GetRelativePath(EditorData.GamePath, filepathEditing);
-                var patchPath = Path.Combine(EditorData.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
+                string relativeEditingPath = PathHelpers.GetRelativePath(ProjectEditing.GamePath, filepathEditing);
+                var patchPath = Path.Combine(ProjectEditing.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
                 Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
                 XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
-                updateFilesystemView(Path.Combine(EditorData.GamePath, "data"));
+                updateFilesystemView(Path.Combine(ProjectEditing.GamePath, "data"));
                 */
             };
         }
@@ -172,7 +193,9 @@ namespace MarioPartyEditor
 
                 rom.Filesystem.Initialize();
 
-                EditorData.ROMEditing = rom;
+                ProjectEditing = new EditorProject();
+
+                ProjectEditing.ROMEditing = rom;
             }
         }
 
@@ -181,10 +204,10 @@ namespace MarioPartyEditor
             var newROMFilepathDialog = new SaveFileDialog() { Title = "Save new ROM to...", DefaultExt = "nds", AddExtension = true };
             if (newROMFilepathDialog.ShowDialog() == DialogResult.OK)
             {
-                ByteSlice newROMData = new ByteSlice(EditorData.ROMEditing.Data.GetAsArrayCopy());
+                ByteSlice newROMData = new ByteSlice(ProjectEditing.ROMEditing.Data.GetAsArrayCopy());
 
                 // We pack everything back to the ROM with the new data, and we're done.
-                EditorData.ROMEditing.Filesystem.PackTo(newROMData);
+                ProjectEditing.ROMEditing.Filesystem.PackTo(newROMData);
 
                 var newROMFilepath = newROMFilepathDialog.FileName;
                 using (var romFile = File.OpenWrite(newROMFilepath))
@@ -204,17 +227,18 @@ namespace MarioPartyEditor
             if (SelectedFile == null) return;
 
             ByteSlice contents;
-            if(LZ77.IsCompressed(SelectedFile))
+            if (LZ77.IsCompressed(SelectedFile))
             {
-                contents = new ByteSlice(LZ77.Decompress(SelectedFile.RetrievePatchedContents()));
-            } else
+                contents = new ByteSlice(LZ77.Decompress(new ByteSlice(SelectedFile.RetrieveLatestVersionData())));
+            }
+            else
             {
-                contents = SelectedFile.RetrievePatchedContents();
+                contents = new ByteSlice(SelectedFile.RetrieveLatestVersionData());
             }
 
             var saveFileDialog = new SaveFileDialog() { FileName = SelectedFile.Name };
 
-            if(saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 using var fileToDecompressTo = File.OpenWrite(saveFileDialog.FileName);
                 fileToDecompressTo.Write(contents.Source, 0, contents.Size);
@@ -224,7 +248,7 @@ namespace MarioPartyEditor
         #region Keybindings
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if(keyData == (Keys.Control | Keys.S))
+            if (keyData == (Keys.Control | Keys.S))
             {
                 ShowSaveProjectDialog();
             }
@@ -238,24 +262,43 @@ namespace MarioPartyEditor
 
             OpenFileDialog dialog = new OpenFileDialog() { CheckFileExists = true };
 
-            if(dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var file = File.OpenRead(dialog.FileName);
                 var rawContents = new byte[file.Length];
                 file.Read(rawContents, 0, (int)file.Length);
-                ByteSlice contents;
+                byte[] contents;
 
-                if(LZ77.IsCompressed(SelectedFile))
+                if (LZ77.IsCompressed(SelectedFile))
                 {
                     Console.WriteLine("Compressing...");
-                    contents = new ByteSlice(LZ77.Compress(new ByteSlice(rawContents)));
-                } else
+                    contents = LZ77.Compress(new ByteSlice(rawContents));
+                }
+                else
                 {
-                    contents = new ByteSlice(rawContents);
+                    contents = rawContents;
                 }
 
-                var patch = XDelta.CreatePatch(contents, SelectedFile.RetrievePatchedContents());
-                SelectedFile.Patches.Add(patch);
+                SelectedFile.AddNewVersion(ProjectEditing.HeadCommit, contents);
+            }
+        }
+
+        private void vcsChangeListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void vcsCommitButton_Click(object sender, EventArgs e)
+        {
+            var createCommitDialog = new CreateCommitForm(ProjectEditing.HeadCommit, true);
+
+            if (createCommitDialog.ShowDialog() == DialogResult.OK)
+            {
+                Console.WriteLine("Commit Done");
+                ProjectEditing.HeadCommit.Time = DateTime.UtcNow;
+                ProjectEditing.HeadCommit.Name = createCommitDialog.CommitName;
+                ProjectEditing.HeadCommit.Description = createCommitDialog.CommitDescription;
+                ProjectEditing.PastCommits.Push(ProjectEditing.HeadCommit);
+                ProjectEditing.HeadCommit = new VCSCommit();
             }
         }
     }

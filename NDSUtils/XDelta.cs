@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace NDSUtils
@@ -37,29 +39,6 @@ namespace NDSUtils
             exe2Process.WaitForExit();
         }
 
-        public static ByteSlice CreatePatch(ByteSlice target, ByteSlice source)
-        {
-            // TODO: Change this ASAP when I compile the DLLs for XDelta, replace this executable call with a library link, which
-            // will be a thousand times faster, specially on PCs with old HDDs.
-
-            var targetFilename = Path.GetTempFileName();
-            var sourceFilename = Path.GetTempFileName();
-            var patchFilename = Path.GetTempFileName();
-            {
-                using var targetFile = File.OpenWrite(targetFilename);
-                targetFile.Write(target.GetAsArrayCopy(), 0, target.Size);
-                using var sourceFile = File.OpenWrite(sourceFilename);
-                sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
-            }
-
-            CreatePatch(targetFilename, sourceFilename, patchFilename);
-
-            using var patchFile = File.OpenRead(patchFilename);
-            byte[] patchData = new byte[patchFile.Length];
-            patchFile.Read(patchData, 0, (int)patchFile.Length);
-            return new ByteSlice(patchData);
-        }
-
         /// <summary>
         /// Applies a xdelta3 patch to source.
         /// </summary>
@@ -77,8 +56,57 @@ namespace NDSUtils
             using Process exeProcess = Process.Start(startInfo);
             exeProcess.WaitForExit();
         }
+    }
 
-        public static ByteSlice ApplyPatch(ByteSlice patch, ByteSlice source)
+    [Serializable]
+    public readonly struct XDeltaPatch : ISerializable
+    {
+        public readonly byte[] Data;
+        public readonly int OriginalFilesize;
+        public readonly int PatchedFilesize;
+
+        public XDeltaPatch(byte[] source, byte[] target)
+        {
+            OriginalFilesize = source.Length;
+            PatchedFilesize = target.Length;
+
+            // TODO: Change this ASAP when I compile the DLLs for XDelta, replace this executable call with a library link, which
+            // will be a thousand times faster, specially on PCs with old HDDs.
+
+            var targetFilename = Path.GetTempFileName();
+            var sourceFilename = Path.GetTempFileName();
+            var patchFilename = Path.GetTempFileName();
+            {
+                using var targetFile = File.OpenWrite(targetFilename);
+                targetFile.Write(target, 0, target.Length);
+                using var sourceFile = File.OpenWrite(sourceFilename);
+                sourceFile.Write(source, 0, source.Length);
+            }
+
+            XDelta.CreatePatch(targetFilename, sourceFilename, patchFilename);
+
+            using var patchFile = File.OpenRead(patchFilename);
+            Data = new byte[patchFile.Length];
+            patchFile.Read(Data, 0, (int)patchFile.Length);
+        }
+
+        #region Serialization / Deserialization
+        public XDeltaPatch(SerializationInfo info, StreamingContext context)
+        {
+            Data = info.GetValue(nameof(Data), typeof(byte[])) as byte[];
+            OriginalFilesize = info.GetInt32(nameof(OriginalFilesize));
+            PatchedFilesize = info.GetInt32(nameof(PatchedFilesize));
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(Data), Data);
+            info.AddValue(nameof(OriginalFilesize), OriginalFilesize);
+            info.AddValue(nameof(PatchedFilesize), PatchedFilesize);
+        }
+        #endregion
+
+        public byte[] Apply(byte[] source)
         {
             // TODO: Change this ASAP when I compile the DLLs for XDelta, replace this executable call with a library link, which
             // will be a thousand times faster, specially on PCs with old HDDs.
@@ -88,18 +116,18 @@ namespace NDSUtils
             var resultFilename = Path.GetTempFileName();
             {
                 using var patchFile = File.OpenWrite(patchFilename);
-                patchFile.Write(patch.GetAsArrayCopy(), 0, patch.Size);
+                patchFile.Write(Data, 0, Data.Length);
                 using var sourceFile = File.OpenWrite(sourceFilename);
-                sourceFile.Write(source.GetAsArrayCopy(), 0, source.Size);
+                sourceFile.Write(source, 0, source.Length);
             }
-            
 
-            ApplyPatch(patchFilename, sourceFilename, resultFilename);
+
+            XDelta.ApplyPatch(patchFilename, sourceFilename, resultFilename);
 
             using var resultFile = File.OpenRead(resultFilename);
             byte[] resultData = new byte[resultFile.Length];
             resultFile.Read(resultData, 0, (int)resultFile.Length);
-            return new ByteSlice(resultData);
+            return resultData;
         }
     }
 }

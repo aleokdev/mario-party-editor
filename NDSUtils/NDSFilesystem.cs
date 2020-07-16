@@ -179,7 +179,7 @@ namespace NDSUtils
 
             void SaveFile(NDSFile file)
             {
-                int filesize = file.PatchedSize;
+                int filesize = file.LatestVersionSize;
                 ByteSlice GetFileSlice() => target.Slice((int)lastFileSaveAddress, filesize);
                 IEnumerable<ByteSlice> calculateRangesIntersecting() =>
                     from range in protectedMemoryRanges where range.Intersects(GetFileSlice()) select range;
@@ -191,7 +191,7 @@ namespace NDSUtils
                 }
                 Console.WriteLine($"Found space for file: {lastFileSaveAddress:X}");
                 if (lastFileSaveAddress + filesize > target.SliceEnd) throw new Exception("No space in ROM to fit any more files!");
-                GetFileSlice().ReplaceWith(file.RetrievePatchedContents());
+                GetFileSlice().ReplaceWith(new ByteSlice(file.RetrieveLatestVersionData()));
                 Console.WriteLine($"Changed {filesize}B.");
 
                 var fileROMBounds = target.Slice((int)lastFileSaveAddress, filesize);
