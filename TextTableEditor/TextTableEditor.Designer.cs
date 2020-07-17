@@ -29,18 +29,11 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Label label1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextTableEditor));
             this.textListBox = new System.Windows.Forms.ListBox();
             this.fileSizeLabel = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // textListBox
-            // 
-            this.textListBox.FormattingEnabled = true;
-            this.textListBox.Location = new System.Drawing.Point(13, 13);
-            this.textListBox.Name = "textListBox";
-            this.textListBox.Size = new System.Drawing.Size(775, 407);
-            this.textListBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -52,6 +45,14 @@
             label1.TabIndex = 1;
             label1.Text = "Size:";
             // 
+            // textListBox
+            // 
+            this.textListBox.FormattingEnabled = true;
+            this.textListBox.Location = new System.Drawing.Point(13, 13);
+            this.textListBox.Name = "textListBox";
+            this.textListBox.Size = new System.Drawing.Size(775, 407);
+            this.textListBox.TabIndex = 0;
+            // 
             // fileSizeLabel
             // 
             this.fileSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -62,7 +63,7 @@
             this.fileSizeLabel.TabIndex = 2;
             this.fileSizeLabel.Text = "Loading...";
             // 
-            // TextEditor
+            // TextTableEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,7 +71,8 @@
             this.Controls.Add(this.fileSizeLabel);
             this.Controls.Add(label1);
             this.Controls.Add(this.textListBox);
-            this.Name = "TextEditor";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "TextTableEditor";
             this.Text = "TextEditor";
             this.ResumeLayout(false);
             this.PerformLayout();

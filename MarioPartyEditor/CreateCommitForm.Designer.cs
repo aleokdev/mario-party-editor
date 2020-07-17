@@ -31,6 +31,7 @@
             System.Windows.Forms.GroupBox groupBox1;
             System.Windows.Forms.GroupBox groupBox2;
             System.Windows.Forms.Label label2;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateCommitForm));
             this.changedFilesListBox = new System.Windows.Forms.ListBox();
             this.commitNameTextBox = new System.Windows.Forms.TextBox();
             this.commitTimeLabel = new System.Windows.Forms.Label();
@@ -138,6 +139,7 @@
             this.Controls.Add(this.commitTimeLabel);
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CreateCommitForm";
             this.Text = "Create New Commit...";
             groupBox1.ResumeLayout(false);
