@@ -4,12 +4,14 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
 using NDSUtils;
 
 namespace TextTableEditor
 {
+    // TODO: Redo this entire class. Contains outdated code.
     public partial class TextTableEditor : Form
     {
         NDSFile fileEditing;
@@ -39,7 +41,7 @@ namespace TextTableEditor
         {
             base.OnShown(e);
             var contents = fileEditing.RetrieveLatestVersionData();
-            var texts = readTexts(new BinaryReader(new MemoryStream(contents)));
+            string[] texts = readTexts(new BinaryReader(new MemoryStream(contents)));
             if (texts == null)
             {
                 MessageBox.Show("This file does not seem to be a valid text file.");
@@ -70,30 +72,39 @@ namespace TextTableEditor
 
         string[] readTexts(BinaryReader reader)
         {
-            uint textCount = reader.ReadUInt32();
-            var textAddresses = new uint[textCount];
-            for (int textIndex = 0; textIndex < textCount; textIndex++)
+            try
             {
-                textAddresses[textIndex] = reader.ReadUInt32();
-            }
-            var texts = new string[textCount];
-
-            for (int textIndex = 0; textIndex < textCount; textIndex++)
-            {
-                const int bytes_per_char = 2;
-                reader.BaseStream.Seek(textAddresses[textIndex], SeekOrigin.Begin);
-                var chars = new List<byte>();
-                byte lastChar = 0xFF;
-                while (lastChar != 0)
+                uint textCount = reader.ReadUInt32();
+                if (textCount > 1000) // I doubt there are any text tables out there that have more than 1000 texts...
+                    return null;
+                var textAddresses = new uint[textCount];
+                for (int textIndex = 0; textIndex < textCount; textIndex++)
                 {
-                    chars.AddRange(reader.ReadBytes(bytes_per_char));
-                    lastChar = chars[chars.Count - 2];
+                    textAddresses[textIndex] = reader.ReadUInt32();
+                }
+                var texts = new string[textCount];
+
+                for (int textIndex = 0; textIndex < textCount; textIndex++)
+                {
+                    const int bytes_per_char = 2;
+                    reader.BaseStream.Seek(textAddresses[textIndex], SeekOrigin.Begin);
+                    var chars = new List<byte>();
+                    byte lastChar = 0xFF;
+                    while (lastChar != 0)
+                    {
+                        chars.AddRange(reader.ReadBytes(bytes_per_char));
+                        lastChar = chars[chars.Count - 2];
+                    }
+
+                    texts[textIndex] = Encoding.GetEncoding("UTF-16").GetString(chars.ToArray());
                 }
 
-                texts[textIndex] = Encoding.GetEncoding("UTF-16").GetString(chars.ToArray());
+                return texts;
             }
-
-            return texts;
+            catch (Exception _)
+            {
+                return null;
+            }
         }
 
         private void textListBox_MeasureItem(object sender, MeasureItemEventArgs e)
