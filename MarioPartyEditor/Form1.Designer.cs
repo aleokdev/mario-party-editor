@@ -239,6 +239,7 @@
             // 
             this.selectedFileViewHistoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectedFileViewHistoryButton.Enabled = false;
             this.selectedFileViewHistoryButton.Location = new System.Drawing.Point(4, 91);
             this.selectedFileViewHistoryButton.Name = "selectedFileViewHistoryButton";
             this.selectedFileViewHistoryButton.Size = new System.Drawing.Size(234, 23);
@@ -384,6 +385,7 @@
             // vcsUndoButton
             // 
             this.vcsUndoButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vcsUndoButton.Enabled = false;
             this.vcsUndoButton.Location = new System.Drawing.Point(3, 50);
             this.vcsUndoButton.Name = "vcsUndoButton";
             this.vcsUndoButton.Size = new System.Drawing.Size(204, 41);
