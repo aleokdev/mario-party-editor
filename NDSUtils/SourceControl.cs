@@ -50,9 +50,9 @@ namespace NDSUtils
     public class VCSCommit
     {
         /// <summary>
-        /// When the commit was finished.
+        /// When the commit was finished. Null if the commit hasn't been pushed to the stack yet.
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime? Time { get; set; } = null;
 
         /// <summary>
         /// A short name describing the changes done in the commit.
@@ -68,5 +68,7 @@ namespace NDSUtils
         /// A list of changes done in the commit.
         /// </summary>
         public ObservableCollection<VCSChange> Changes { get; set; } = new ObservableCollection<VCSChange>();
+
+        public override string ToString() => Name;
     }
 }

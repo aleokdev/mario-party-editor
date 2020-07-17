@@ -289,7 +289,7 @@ namespace MarioPartyEditor
 
         private void vcsCommitButton_Click(object sender, EventArgs e)
         {
-            var createCommitDialog = new CreateCommitForm(ProjectEditing.HeadCommit, true);
+            var createCommitDialog = new CreateCommitForm(ProjectEditing.HeadCommit, CreateCommitForm.CommitFormMode.CreateCommit);
 
             if (createCommitDialog.ShowDialog() == DialogResult.OK)
             {
@@ -300,6 +300,11 @@ namespace MarioPartyEditor
                 ProjectEditing.PastCommits.Push(ProjectEditing.HeadCommit);
                 ProjectEditing.HeadCommit = new VCSCommit();
             }
+        }
+
+        private void vcsHistoryButton_Click(object sender, EventArgs e)
+        {
+            new CommitHistoryForm(ProjectEditing.PastCommits).ShowDialog();
         }
     }
 }

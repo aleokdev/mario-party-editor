@@ -11,7 +11,13 @@ namespace MarioPartyEditor
 
         public string CommitDescription => commitDescriptionTextBox.Text;
 
-        public CreateCommitForm(VCSCommit commit, bool canAccept)
+        public enum CommitFormMode
+        {
+            CreateCommit,
+            EditCommit
+        }
+
+        public CreateCommitForm(VCSCommit commit, CommitFormMode mode)
         {
             CommitViewing = commit;
 
@@ -23,8 +29,25 @@ namespace MarioPartyEditor
             commitNameTextBox.Text = commit.Name;
             commitDescriptionTextBox.Text = commit.Description;
 
-            createCommitButton.Visible = canAccept;
+            createCommitButton.Text = mode switch
+            {
+                CommitFormMode.CreateCommit => "Accept And Create Commit",
+                CommitFormMode.EditCommit => "Accept And Edit Commit",
+                _ => throw new System.NotImplementedException()
+            };
+            this.Text = mode switch
+            {
+                CommitFormMode.CreateCommit => "Create New Commit...",
+                CommitFormMode.EditCommit => "Edit Commit...",
+                _ => throw new System.NotImplementedException()
+            };
             AcceptButton = createCommitButton;
+
+            commitTimeLabel.Text = commit.Time switch
+            {
+                null => "Not yet committed",
+                _ => $"{commit.Time?.ToLongTimeString()} - {commit.Time?.ToLongDateString()}"
+            };
         }
 
         private void createCommitButton_Click(object sender, System.EventArgs e)

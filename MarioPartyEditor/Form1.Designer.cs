@@ -117,8 +117,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.replaceFileButton);
-            splitContainer1.Size = new System.Drawing.Size(313, 28);
-            splitContainer1.SplitterDistance = 154;
+            splitContainer1.Size = new System.Drawing.Size(312, 28);
+            splitContainer1.SplitterDistance = 153;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 6;
             // 
@@ -130,7 +130,7 @@
             this.extractFileButton.Location = new System.Drawing.Point(0, 0);
             this.extractFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.extractFileButton.Name = "extractFileButton";
-            this.extractFileButton.Size = new System.Drawing.Size(154, 28);
+            this.extractFileButton.Size = new System.Drawing.Size(153, 28);
             this.extractFileButton.TabIndex = 4;
             this.extractFileButton.Text = "Extract decompressed";
             this.extractFileButton.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@
             this.replaceFileButton.Location = new System.Drawing.Point(0, 0);
             this.replaceFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.replaceFileButton.Name = "replaceFileButton";
-            this.replaceFileButton.Size = new System.Drawing.Size(151, 28);
+            this.replaceFileButton.Size = new System.Drawing.Size(150, 28);
             this.replaceFileButton.TabIndex = 5;
             this.replaceFileButton.Text = "Replace with...";
             this.replaceFileButton.UseVisualStyleBackColor = true;
@@ -158,7 +158,7 @@
             selectedFileInfoGroupBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             selectedFileInfoGroupBox.Name = "selectedFileInfoGroupBox";
             selectedFileInfoGroupBox.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            selectedFileInfoGroupBox.Size = new System.Drawing.Size(324, 140);
+            selectedFileInfoGroupBox.Size = new System.Drawing.Size(323, 140);
             selectedFileInfoGroupBox.TabIndex = 7;
             selectedFileInfoGroupBox.TabStop = false;
             selectedFileInfoGroupBox.Text = "Selected File Information";
@@ -185,8 +185,8 @@
             splitContainer2.Panel2.Controls.Add(this.selectedFileSizeLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFullPathLabel);
             splitContainer2.Panel2.Controls.Add(this.selectedFileFilenameLabel);
-            splitContainer2.Size = new System.Drawing.Size(318, 117);
-            splitContainer2.SplitterDistance = 68;
+            splitContainer2.Size = new System.Drawing.Size(317, 117);
+            splitContainer2.SplitterDistance = 67;
             splitContainer2.SplitterWidth = 5;
             splitContainer2.TabIndex = 1;
             // 
@@ -194,7 +194,7 @@
             // 
             label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(12, 74);
+            label1.Location = new System.Drawing.Point(11, 74);
             label1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(49, 16);
@@ -206,7 +206,7 @@
             // 
             label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(33, 51);
+            label4.Location = new System.Drawing.Point(32, 51);
             label4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(28, 16);
@@ -217,7 +217,7 @@
             // 
             label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(9, 28);
+            label3.Location = new System.Drawing.Point(8, 28);
             label3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(54, 16);
@@ -228,7 +228,7 @@
             // 
             label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(8, 4);
+            label2.Location = new System.Drawing.Point(7, 4);
             label2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(55, 16);
@@ -241,7 +241,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.selectedFileViewHistoryButton.Location = new System.Drawing.Point(4, 91);
             this.selectedFileViewHistoryButton.Name = "selectedFileViewHistoryButton";
-            this.selectedFileViewHistoryButton.Size = new System.Drawing.Size(235, 23);
+            this.selectedFileViewHistoryButton.Size = new System.Drawing.Size(234, 23);
             this.selectedFileViewHistoryButton.TabIndex = 4;
             this.selectedFileViewHistoryButton.Text = "View History";
             this.selectedFileViewHistoryButton.UseVisualStyleBackColor = true;
@@ -320,7 +320,7 @@
             sourceControlGroupBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             sourceControlGroupBox.Name = "sourceControlGroupBox";
             sourceControlGroupBox.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            sourceControlGroupBox.Size = new System.Drawing.Size(324, 164);
+            sourceControlGroupBox.Size = new System.Drawing.Size(323, 164);
             sourceControlGroupBox.TabIndex = 10;
             sourceControlGroupBox.TabStop = false;
             sourceControlGroupBox.Text = "Source Control";
@@ -338,8 +338,8 @@
             // splitContainer3.Panel2
             // 
             splitContainer3.Panel2.Controls.Add(this.tableLayoutPanel2);
-            splitContainer3.Size = new System.Drawing.Size(318, 141);
-            splitContainer3.SplitterDistance = 104;
+            splitContainer3.Size = new System.Drawing.Size(317, 141);
+            splitContainer3.SplitterDistance = 103;
             splitContainer3.TabIndex = 0;
             // 
             // vcsChangeListBox
@@ -349,7 +349,7 @@
             this.vcsChangeListBox.ItemHeight = 16;
             this.vcsChangeListBox.Location = new System.Drawing.Point(0, 0);
             this.vcsChangeListBox.Name = "vcsChangeListBox";
-            this.vcsChangeListBox.Size = new System.Drawing.Size(104, 141);
+            this.vcsChangeListBox.Size = new System.Drawing.Size(103, 141);
             this.vcsChangeListBox.TabIndex = 0;
             this.vcsChangeListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.vcsChangeListBox_MouseDoubleClick);
             // 
@@ -400,6 +400,7 @@
             this.vcsHistoryButton.TabIndex = 2;
             this.vcsHistoryButton.Text = "History";
             this.vcsHistoryButton.UseVisualStyleBackColor = true;
+            this.vcsHistoryButton.Click += new System.EventHandler(this.vcsHistoryButton_Click);
             // 
             // groupBox1
             // 
@@ -411,7 +412,7 @@
             groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            groupBox1.Size = new System.Drawing.Size(324, 259);
+            groupBox1.Size = new System.Drawing.Size(323, 259);
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             groupBox1.Text = "Tools And Utils";
@@ -423,7 +424,7 @@
             this.loadTextEditorButton.Location = new System.Drawing.Point(5, 23);
             this.loadTextEditorButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.loadTextEditorButton.Name = "loadTextEditorButton";
-            this.loadTextEditorButton.Size = new System.Drawing.Size(313, 48);
+            this.loadTextEditorButton.Size = new System.Drawing.Size(312, 48);
             this.loadTextEditorButton.TabIndex = 0;
             this.loadTextEditorButton.Text = "Load with Text Table Editor";
             this.loadTextEditorButton.UseVisualStyleBackColor = true;
@@ -437,7 +438,7 @@
             this.openWithButton.Location = new System.Drawing.Point(5, 79);
             this.openWithButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.openWithButton.Name = "openWithButton";
-            this.openWithButton.Size = new System.Drawing.Size(313, 48);
+            this.openWithButton.Size = new System.Drawing.Size(312, 48);
             this.openWithButton.TabIndex = 3;
             this.openWithButton.Text = "Open With...";
             this.openWithButton.UseVisualStyleBackColor = true;
@@ -543,7 +544,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(330, 587);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(329, 587);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // Form1

@@ -119,9 +119,9 @@
             // createCommitButton
             // 
             this.createCommitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createCommitButton.Location = new System.Drawing.Point(625, 405);
+            this.createCommitButton.Location = new System.Drawing.Point(569, 405);
             this.createCommitButton.Name = "createCommitButton";
-            this.createCommitButton.Size = new System.Drawing.Size(112, 23);
+            this.createCommitButton.Size = new System.Drawing.Size(168, 23);
             this.createCommitButton.TabIndex = 5;
             this.createCommitButton.Text = "Accept And Commit";
             this.createCommitButton.UseVisualStyleBackColor = true;
@@ -139,7 +139,7 @@
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
             this.Name = "CreateCommitForm";
-            this.Text = "CreateCommitForm";
+            this.Text = "Create New Commit...";
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();

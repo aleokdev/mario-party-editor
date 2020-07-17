@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommitHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommitHistoryForm.Designer.cs">
+      <DependentUpon>CommitHistoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateCommitForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CommitHistoryForm.resx">
+      <DependentUpon>CommitHistoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CreateCommitForm.resx">
       <DependentUpon>CreateCommitForm.cs</DependentUpon>
     </EmbeddedResource>
