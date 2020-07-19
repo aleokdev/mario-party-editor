@@ -14,9 +14,9 @@ namespace TextTableEditor
     // TODO: Redo this entire class. Contains outdated code.
     public partial class TextTableEditor : Form
     {
-        NDSFile fileEditing;
-        long _originalFileSize;
-        long originalFileSize
+        public NDSFile FileEditing { get; set; }
+        private long _originalFileSize;
+        private long OriginalFileSize
         {
             get => _originalFileSize;
             set
@@ -25,51 +25,53 @@ namespace TextTableEditor
                 updateFileSizeLabel();
             }
         }
-        long newFileSize;
+        private IEnumerable<string> Texts => from object s in textListBox.Items select s.ToString();
+        private readonly bool isOriginalCompressed;
+        private readonly VCSCommit masterCommit;
 
-        public TextTableEditor(NDSFile fileToEdit)
+        public TextTableEditor(NDSFile fileToEdit, VCSCommit masterCommit)
         {
+            // Initial setup
             InitializeComponent();
-            fileEditing = fileToEdit;
             this.Text = $"Text Editor [{fileToEdit.FullPath}]";
-
-            originalFileSize = newFileSize = fileToEdit.OriginalSize;
-            textListBox.Items.Clear();
+            FileEditing = fileToEdit;
+            isOriginalCompressed = LZ77.IsCompressed(FileEditing);
+            OriginalFileSize = fileToEdit.LatestVersionSize;
+            this.masterCommit = masterCommit;
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            var contents = fileEditing.RetrieveLatestVersionData();
-            string[] texts = readTexts(new BinaryReader(new MemoryStream(contents)));
+            // Read file contents
+            var data = isOriginalCompressed switch
+            {
+                true => LZ77.Decompress(new ByteSlice(FileEditing.RetrieveLatestVersionData())),
+                false => FileEditing.RetrieveLatestVersionData()
+            };
+
+            var texts = readTexts(new BinaryReader(new MemoryStream(data)));
             if (texts == null)
             {
                 MessageBox.Show("This file does not seem to be a valid text file.");
                 Close();
+                return;
             }
-            else
-            {
-                textListBox.DrawMode = DrawMode.OwnerDrawVariable;
-                textListBox.MeasureItem += textListBox_MeasureItem;
-                textListBox.DrawItem += textListBox_DrawItem;
-                textListBox.Items.AddRange(texts);
-            }
+
+            // Bind listbox draw events
+            textListBox.DrawMode = DrawMode.OwnerDrawVariable;
+            textListBox.MeasureItem += textListBox_MeasureItem;
+            textListBox.DrawItem += textListBox_DrawItem;
+            textListBox.Items.AddRange(texts);
         }
 
         void updateFileSizeLabel()
         {
-            fileSizeLabel.Text = $"{newFileSize} / {originalFileSize}";
-            if (newFileSize > originalFileSize)
-                fileSizeLabel.ForeColor = Color.Red;
-            else if (newFileSize < originalFileSize)
-            {
-                fileSizeLabel.ForeColor = Color.Blue;
-                fileSizeLabel.Text += " (Adding filler)";
-            }
-            else // newFileSize == originalFileSize
-                fileSizeLabel.ForeColor = SystemColors.ControlText;
+            var compressedText = isOriginalCompressed ? "Compressed" : "";
+            fileSizeLabel.Text = $"Original: {compressedText} {OriginalFileSize}B";
         }
 
+        #region Format Helpers
         string[] readTexts(BinaryReader reader)
         {
             try
@@ -107,6 +109,37 @@ namespace TextTableEditor
             }
         }
 
+        byte[] serializeTexts()
+        {
+            var writer = new BinaryWriter(new MemoryStream());
+
+            // First, write the number of texts there are.
+            var textCount = Texts.Count();
+            writer.Write((uint)textCount);
+
+            // Then write the estimated addresses of those texts.
+            int addressesPartSize = sizeof(uint) * textCount;
+            int currentAddress = sizeof(uint) + addressesPartSize;
+            foreach(var text in Texts)
+            {
+                writer.Write(currentAddress);
+                // Null-terminated UTF-16
+                currentAddress += (text.Length + 1) * 2;
+            }
+
+            // And finally write the texts themselves in UTF-16, which should be in the addresses
+            // estimated earlier.
+            foreach(var text in Texts)
+            {
+                writer.Write(Encoding.GetEncoding("UTF-16").GetBytes(text));
+                // GetBytes doesn't encode string terminator
+                writer.Write(new byte[] { 0, 0 });
+            }
+
+            return ((MemoryStream)writer.BaseStream).ToArray();
+        }
+        #endregion
+
         private void textListBox_MeasureItem(object sender, MeasureItemEventArgs e)
         {
             const int spacing = 4;
@@ -121,6 +154,30 @@ namespace TextTableEditor
             var lineY = e.Bounds.Bottom - 2;
             e.Graphics.DrawString(textListBox.Items[e.Index].ToString(), e.Font, brush, e.Bounds);
             e.Graphics.DrawLine(new Pen(brush), new Point(e.Bounds.Left, lineY), new Point(e.Bounds.Right, lineY));
+        }
+
+        private void saveAndCloseButton_Click(object sender, EventArgs e)
+        {
+            var newData = isOriginalCompressed switch
+            {
+                true => LZ77.Compress(new ByteSlice(serializeTexts())),
+                false => serializeTexts()
+            };
+            FileEditing.AddNewVersion(masterCommit, newData);
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void textListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (textListBox.SelectedItem == null) return;
+
+            var editItemDialog = new TextInputDialog(textListBox.SelectedItem.ToString());
+
+            if(editItemDialog.ShowDialog() == DialogResult.OK)
+            {
+                textListBox.Items[textListBox.SelectedIndex] = editItemDialog.TextInputted;
+            }
         }
     }
 }

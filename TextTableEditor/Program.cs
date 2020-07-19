@@ -30,7 +30,8 @@ namespace TextTableEditor
                 else
                     return;
             }
-            Application.Run(new TextTableEditor(new NDSExternalFile(null, 0, fileToEdit, fileToEdit)));
+            var masterCommit = new VCSCommit();
+            Application.Run(new TextTableEditor(new NDSExternalFile(null, 0, fileToEdit, fileToEdit), masterCommit));
         }
     }
 }

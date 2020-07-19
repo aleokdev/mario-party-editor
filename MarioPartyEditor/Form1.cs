@@ -146,22 +146,8 @@ namespace MarioPartyEditor
 
         private void loadTextEditorButton_Click(object sender, EventArgs e)
         {
-            var editor = new TextTableEditor.TextTableEditor(SelectedFile);
-            editor.Show(this);
-            editor.FormClosed += (_, __) =>
-            {
-                // TODO: Patch
-                /*
-                var tempNewFilePath = Path.GetTempFileName();
-                using (var tempNewFile = File.OpenWrite(tempNewFilePath))
-                    tempNewFile.Write(new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6);
-                string relativeEditingPath = PathHelpers.GetRelativePath(ProjectEditing.GamePath, filepathEditing);
-                var patchPath = Path.Combine(ProjectEditing.GamePath, "patch", Path.ChangeExtension(relativeEditingPath, "xdelta"));
-                Directory.CreateDirectory(Path.GetDirectoryName(patchPath));
-                XDelta.CreatePatch(tempNewFilePath, filepathEditing, patchPath);
-                updateFilesystemView(Path.Combine(ProjectEditing.GamePath, "data"));
-                */
-            };
+            var editor = new TextTableEditor.TextTableEditor(SelectedFile, ProjectEditing.HeadCommit);
+            editor.ShowDialog(this);
         }
 
         private void openWithButton_Click(object sender, EventArgs e)
